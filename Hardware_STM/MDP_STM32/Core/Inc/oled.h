@@ -14,26 +14,28 @@
 
 //----------------- OLED Definition ----------------
 
-#define OLED_SCL_Pin GPIO_PIN_14
-#define OLED_SCL_GPIO_Port GPIOD
-#define OLED_SDA_Pin GPIO_PIN_13
-#define OLED_SDA_GPIO_Port GPIOD
-#define OLED_RST_Pin GPIO_PIN_12
-#define OLED_RST_GPIO_Port GPIOD
-#define OLED_DC_Pin GPIO_PIN_11
-#define OLED_DC_GPIO_Port GPIOD
+#define OLED_SCL_Pin GPIO_PIN_5
+#define OLED_SCL_GPIO_Port GPIOE
+#define OLED_SDA_Pin GPIO_PIN_6
+#define OLED_SDA_GPIO_Port GPIOE
+#define OLED_RST_Pin GPIO_PIN_7
+#define OLED_RST_GPIO_Port GPIOE
+#define OLED_DC_Pin GPIO_PIN_8
+#define OLED_DC_GPIO_Port GPIOE
 
-#define OLED_RST_Clr()	HAL_GPIO_WritePin(GPIOD, OLED_RST_Pin, GPIO_PIN_RESET)	// RST = 0
-#define OLED_RST_Set()	HAL_GPIO_WritePin(GPIOD, OLED_RST_Pin, GPIO_PIN_SET)	// RST = 1
 
-#define OLED_RS_Clr()	HAL_GPIO_WritePin(GPIOD, OLED_DC_Pin, GPIO_PIN_RESET)	// DC = 0
-#define OLED_RS_Set()	HAL_GPIO_WritePin(GPIOD, OLED_DC_Pin, GPIO_PIN_SET)		// DC = 1
+#define OLED_SCLK_Clr() HAL_GPIO_WritePin(OLED_SCL_GPIO_Port, OLED_SCL_Pin, GPIO_PIN_RESET)	// SCL
+#define OLED_SCLK_Set() HAL_GPIO_WritePin(OLED_SCL_GPIO_Port, OLED_SCL_Pin, GPIO_PIN_SET)	// SCL
 
-#define OLED_SCLK_Clr() HAL_GPIO_WritePin(GPIOD, OLED_SCL_Pin, GPIO_PIN_RESET)	// SCL
-#define OLED_SCLK_Set() HAL_GPIO_WritePin(GPIOD, OLED_SCL_Pin, GPIO_PIN_SET)	// SCL
+#define OLED_SDIN_Clr()	HAL_GPIO_WritePin(OLED_SDA_GPIO_Port, OLED_SDA_Pin, GPIO_PIN_RESET)	// SDA
+#define OLED_SDIN_Set()	HAL_GPIO_WritePin(OLED_SDA_GPIO_Port, OLED_SDA_Pin, GPIO_PIN_SET)	// SDA
 
-#define OLED_SDIN_Clr()	HAL_GPIO_WritePin(GPIOD, OLED_SDA_Pin, GPIO_PIN_RESET)	// SDA
-#define OLED_SDIN_Set()	HAL_GPIO_WritePin(GPIOD, OLED_SDA_Pin, GPIO_PIN_SET)	// SDA
+#define OLED_RST_Clr()	HAL_GPIO_WritePin(OLED_RST_GPIO_Port, OLED_RST_Pin, GPIO_PIN_RESET)	// RST = 0
+#define OLED_RST_Set()	HAL_GPIO_WritePin(OLED_RST_GPIO_Port, OLED_RST_Pin, GPIO_PIN_SET)	// RST = 1
+
+#define OLED_RS_Clr()	HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_RESET)	// DC = 0
+#define OLED_RS_Set()	HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_SET)		// DC = 1
+
 #define OLED_CMD  0		// Write Command
 #define OLED_DATA 1		// Write Data
 
