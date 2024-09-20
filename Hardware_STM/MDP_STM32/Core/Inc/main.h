@@ -31,7 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+#include <inttypes.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -49,6 +52,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -61,14 +66,36 @@ void Error_Handler(void);
 #define OLED_SCLK_GPIO_Port GPIOE
 #define OLED_SDIN_Pin GPIO_PIN_6
 #define OLED_SDIN_GPIO_Port GPIOE
+#define MOTOR_A_IN2_Pin GPIO_PIN_2
+#define MOTOR_A_IN2_GPIO_Port GPIOA
+#define MOTOR_A_IN1_Pin GPIO_PIN_3
+#define MOTOR_A_IN1_GPIO_Port GPIOA
+#define MOTOR_B_IN1_Pin GPIO_PIN_4
+#define MOTOR_B_IN1_GPIO_Port GPIOA
+#define MOTOR_B_IN2_Pin GPIO_PIN_5
+#define MOTOR_B_IN2_GPIO_Port GPIOA
+#define MOTOR_B_CH1_Pin GPIO_PIN_6
+#define MOTOR_B_CH1_GPIO_Port GPIOA
+#define MOTOR_B_CH2_Pin GPIO_PIN_7
+#define MOTOR_B_CH2_GPIO_Port GPIOA
 #define OLED_RESET_Pin GPIO_PIN_7
 #define OLED_RESET_GPIO_Port GPIOE
 #define OLED_DC_Pin GPIO_PIN_8
 #define OLED_DC_GPIO_Port GPIOE
+#define SERVO_PWM_Pin GPIO_PIN_9
+#define SERVO_PWM_GPIO_Port GPIOE
 #define LED3_Pin GPIO_PIN_10
 #define LED3_GPIO_Port GPIOE
 #define USER_BUTTON_Pin GPIO_PIN_8
 #define USER_BUTTON_GPIO_Port GPIOD
+#define MOTOR_A_PWM_Pin GPIO_PIN_6
+#define MOTOR_A_PWM_GPIO_Port GPIOC
+#define MOTOR_B_PWM_Pin GPIO_PIN_7
+#define MOTOR_B_PWM_GPIO_Port GPIOC
+#define MOTOR_A_CH1_Pin GPIO_PIN_15
+#define MOTOR_A_CH1_GPIO_Port GPIOA
+#define MOTOR_A_CH2_Pin GPIO_PIN_3
+#define MOTOR_A_CH2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

@@ -4,7 +4,7 @@
  *  Created on: Sep 10, 2024
  *      Author: AD
  *
- *  CONTROL THE OLED
+ *  Control the OLED
  */
 
 // This is the driver for SOLOMON SSD1306 OLED Controller

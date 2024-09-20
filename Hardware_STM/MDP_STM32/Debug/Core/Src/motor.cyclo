@@ -1,0 +1,7 @@
+../Core/Src/motor.c:23:6:motor_init	1
+../Core/Src/motor.c:36:6:setDriveDir	6
+../Core/Src/motor.c:70:6:timer_reset	1
+../Core/Src/motor.c:74:9:getSpeedPwm	1
+../Core/Src/motor.c:79:6:resetEncoders	1
+../Core/Src/motor.c:86:6:setPwmLR	3
+../Core/Src/motor.c:103:6:motor_setDrive	4

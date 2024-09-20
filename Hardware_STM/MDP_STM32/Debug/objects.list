@@ -1,3 +1,4 @@
+"./Core/Src/helper.o"
 "./Core/Src/main.o"
 "./Core/Src/motor.o"
 "./Core/Src/oled.o"
