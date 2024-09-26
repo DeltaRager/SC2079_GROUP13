@@ -84,8 +84,6 @@ void Error_Handler(void);
 #define OLED_DC_GPIO_Port GPIOE
 #define SERVO_PWM_Pin GPIO_PIN_9
 #define SERVO_PWM_GPIO_Port GPIOE
-#define LED3_Pin GPIO_PIN_10
-#define LED3_GPIO_Port GPIOE
 #define USER_BUTTON_Pin GPIO_PIN_8
 #define USER_BUTTON_GPIO_Port GPIOD
 #define MOTOR_A_PWM_Pin GPIO_PIN_6
@@ -94,8 +92,14 @@ void Error_Handler(void);
 #define MOTOR_B_PWM_GPIO_Port GPIOC
 #define MOTOR_A_CH1_Pin GPIO_PIN_15
 #define MOTOR_A_CH1_GPIO_Port GPIOA
+#define US_TRIG_Pin GPIO_PIN_7
+#define US_TRIG_GPIO_Port GPIOD
 #define MOTOR_A_CH2_Pin GPIO_PIN_3
 #define MOTOR_A_CH2_GPIO_Port GPIOB
+#define ICM_SCL_Pin GPIO_PIN_8
+#define ICM_SCL_GPIO_Port GPIOB
+#define ICM_SDA_Pin GPIO_PIN_9
+#define ICM_SDA_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

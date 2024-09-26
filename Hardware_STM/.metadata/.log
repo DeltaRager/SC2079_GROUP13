@@ -265,3 +265,138 @@ localhost:61234: Connection timed out.
 java.lang.Exception: localhost:61234: Connection timed out.
 	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
 	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SESSION 2024-09-25 12:21:13.900 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-25 12:23:52.896
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-25 12:23:52.903
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-25 12:24:01.683
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-26 06:03:47.163 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-26 06:39:41.085
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-26 06:39:41.094
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-26 06:39:49.463
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-26 13:31:21.168 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-26 13:31:52.114
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-26 13:31:52.114
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-26 13:31:59.214
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-26 15:34:45.300 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-26 15:34:49.575
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-26 15:34:49.583
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-26 15:34:54.195
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-26 15:38:53.128 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-26 15:38:56.975
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-26 15:38:56.975
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-26 15:39:01.603
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-26 23:43:54.325 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-26 23:48:06.144
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-26 23:48:06.152
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-26 23:48:14.177
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-27 01:36:16.191 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-27 01:36:35.462
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-27 01:36:35.463
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-27 01:36:43.149
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-27 02:09:20.742 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-27 02:09:26.603
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-27 02:09:26.604
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-27 02:09:32.961
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-09-27 05:32:44.308 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-09-27 05:32:51.574
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-09-27 05:32:51.576
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-09-27 05:32:56.607
+!MESSAGE Started RMI Server, listening on port 41337

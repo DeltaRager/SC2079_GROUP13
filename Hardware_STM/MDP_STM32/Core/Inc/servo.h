@@ -12,15 +12,13 @@
 
 #include "main.h"
 #include "oled.h"
-
-#define SERVO_WIDTH 25.0f			// degrees L/R
-#define SERVO_TURN_PERIOD 20.0f		// ms before turn is updated
-#define SERVO_TURN_STEP 3.0f		// degrees to turn
+#include "helper.h"
 
 #define SERVO_PWM_CHANNEL TIM_CHANNEL_1
 
+
 void servo_init(TIM_HandleTypeDef* pwm);
-void servo_setVal(uint32_t val);
-void servo_setAngle(float angle);
+void servo_set_val(uint32_t val);
+void servo_set_direction(uint8_t dir);
 
 #endif /* INC_SERVO_H_ */
