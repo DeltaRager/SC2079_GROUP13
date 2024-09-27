@@ -27822,3 +27822,676 @@ arm-none-eabi-size  MDP_STM32.elf
   36424	    468	   3396	  40288	   9d60	MDP_STM32.elf
 Finished building: default.size.stdout
  
+15:40:01 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:119:25: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  119 |   OLED_ShowString(0, 0, "Press USER btn");
+      |                         ^~~~~~~~~~~~~~~~
+      |                         |
+      |                         char *
+In file included from ../Core/Src/main.c:24:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:120:26: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  120 |   OLED_ShowString(0, 15, "to continue");
+      |                          ^~~~~~~~~~~~~
+      |                          |
+      |                          char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:199:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  199 |                 OLED_ShowString(0, 0, "Forward");
+      |                                       ^~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:206:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  206 |                 OLED_ShowString(0, 0, "Backward");
+      |                                       ^~~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:213:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  213 |                 OLED_ShowString(0, 0, "Left");
+      |                                       ^~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:220:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  220 |                 OLED_ShowString(0, 0, "Right");
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MDP_STM32.elf
+ 
+arm-none-eabi-size  MDP_STM32.elf 
+arm-none-eabi-objdump -h -S MDP_STM32.elf  > "MDP_STM32.list"
+   text	   data	    bss	    dec	    hex	filename
+  36424	    468	   3396	  40288	   9d60	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+Finished building: MDP_STM32.list
+ 
+15:40:09 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-size  MDP_STM32.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36424	    468	   3396	  40288	   9d60	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+15:43:20 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/motor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/motor.d" -MT"Core/Src/motor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/motor.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:119:25: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  119 |   OLED_ShowString(0, 0, "Press USER btn");
+      |                         ^~~~~~~~~~~~~~~~
+      |                         |
+      |                         char *
+In file included from ../Core/Src/main.c:24:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:120:26: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  120 |   OLED_ShowString(0, 15, "to continue");
+      |                          ^~~~~~~~~~~~~
+      |                          |
+      |                          char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:199:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  199 |                 OLED_ShowString(0, 0, "Forward");
+      |                                       ^~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:206:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  206 |                 OLED_ShowString(0, 0, "Backward");
+      |                                       ^~~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:213:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  213 |                 OLED_ShowString(0, 0, "Left");
+      |                                       ^~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:220:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  220 |                 OLED_ShowString(0, 0, "Right");
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c: In function 'motor_forward':
+../Core/Src/motor.c:130:5: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:11:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   10 | #include "motor.h"
+  +++ |+#include <stdio.h>
+   11 | 
+../Core/Src/motor.c:130:5: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:130:5: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:130:13: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |             ^~~
+      |             |
+      |             uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:130:13: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:130:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |                                 ~^   ~~~~~~~~~~~~~
+      |                                  |   |
+      |                                  |   uint32_t {aka long unsigned int}
+      |                                  unsigned int
+      |                                 %lu
+../Core/Src/motor.c:146:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  146 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+In file included from ../Core/Inc/motor.h:14,
+                 from ../Core/Src/motor.c:10:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:151:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  151 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:151:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:151:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  151 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'motor_backward':
+../Core/Src/motor.c:175:5: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  175 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:175:5: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:175:13: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  175 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |             ^~~
+      |             |
+      |             uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:175:13: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:175:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  175 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |                                 ~^   ~~~~~~~~~~~~~
+      |                                  |   |
+      |                                  |   uint32_t {aka long unsigned int}
+      |                                  unsigned int
+      |                                 %lu
+../Core/Src/motor.c:191:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  191 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:196:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  196 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:196:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:196:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  196 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'turn_left':
+../Core/Src/motor.c:247:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  247 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:252:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  252 |         sprintf(buf, "%u", encoder_cnt);
+      |         ^~~~~~~
+../Core/Src/motor.c:252:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:252:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  252 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:252:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:252:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  252 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'turn_right':
+../Core/Src/motor.c:279:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  279 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:284:17: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  284 |                 sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~~~~~
+../Core/Src/motor.c:284:17: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:284:25: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  284 |                 sprintf(buf, "%u", encoder_cnt);
+      |                         ^~~
+      |                         |
+      |                         uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:284:25: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:284:32: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  284 |                 sprintf(buf, "%u", encoder_cnt);
+      |                               ~^   ~~~~~~~~~~~
+      |                                |   |
+      |                                |   uint32_t {aka long unsigned int}
+      |                                unsigned int
+      |                               %lu
+arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MDP_STM32.elf
+ 
+arm-none-eabi-size  MDP_STM32.elf 
+arm-none-eabi-objdump -h -S MDP_STM32.elf  > "MDP_STM32.list"
+   text	   data	    bss	    dec	    hex	filename
+  36424	    468	   3396	  40288	   9d60	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+Finished building: MDP_STM32.list
+ 
+15:43:30 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-size  MDP_STM32.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36424	    468	   3396	  40288	   9d60	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+15:46:25 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:119:25: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  119 |   OLED_ShowString(0, 0, "Press USER btn");
+      |                         ^~~~~~~~~~~~~~~~
+      |                         |
+      |                         char *
+In file included from ../Core/Src/main.c:24:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:120:26: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  120 |   OLED_ShowString(0, 15, "to continue");
+      |                          ^~~~~~~~~~~~~
+      |                          |
+      |                          char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:200:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  200 |                 OLED_ShowString(0, 0, "Forward");
+      |                                       ^~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:207:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  207 |                 OLED_ShowString(0, 0, "Backward");
+      |                                       ^~~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:214:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  214 |                 OLED_ShowString(0, 0, "Left");
+      |                                       ^~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:221:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  221 |                 OLED_ShowString(0, 0, "Right");
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MDP_STM32.elf
+ 
+arm-none-eabi-size  MDP_STM32.elf 
+arm-none-eabi-objdump -h -S MDP_STM32.elf  > "MDP_STM32.list"
+   text	   data	    bss	    dec	    hex	filename
+  36432	    468	   3396	  40296	   9d68	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+Finished building: MDP_STM32.list
+ 
+15:46:32 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-size  MDP_STM32.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36432	    468	   3396	  40296	   9d68	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+15:48:27 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/motor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/motor.d" -MT"Core/Src/motor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/motor.o"
+../Core/Src/motor.c: In function 'motor_forward':
+../Core/Src/motor.c:130:5: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:11:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   10 | #include "motor.h"
+  +++ |+#include <stdio.h>
+   11 | 
+../Core/Src/motor.c:130:5: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:130:5: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:130:13: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |             ^~~
+      |             |
+      |             uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:130:13: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:130:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  130 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |                                 ~^   ~~~~~~~~~~~~~
+      |                                  |   |
+      |                                  |   uint32_t {aka long unsigned int}
+      |                                  unsigned int
+      |                                 %lu
+../Core/Src/motor.c:146:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  146 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+In file included from ../Core/Inc/motor.h:14,
+                 from ../Core/Src/motor.c:10:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:151:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  151 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:151:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:151:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  151 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'motor_backward':
+../Core/Src/motor.c:175:5: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  175 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:175:5: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:175:13: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  175 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |             ^~~
+      |             |
+      |             uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:175:13: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:175:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  175 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |                                 ~^   ~~~~~~~~~~~~~
+      |                                  |   |
+      |                                  |   uint32_t {aka long unsigned int}
+      |                                  unsigned int
+      |                                 %lu
+../Core/Src/motor.c:191:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  191 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:196:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  196 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:196:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:196:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  196 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'turn_left':
+../Core/Src/motor.c:248:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  248 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:253:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  253 |         sprintf(buf, "%u", encoder_cnt);
+      |         ^~~~~~~
+../Core/Src/motor.c:253:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:253:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  253 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:253:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:253:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  253 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'turn_right':
+../Core/Src/motor.c:281:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  281 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:286:17: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  286 |                 sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~~~~~
+../Core/Src/motor.c:286:17: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:286:25: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  286 |                 sprintf(buf, "%u", encoder_cnt);
+      |                         ^~~
+      |                         |
+      |                         uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:286:25: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:286:32: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  286 |                 sprintf(buf, "%u", encoder_cnt);
+      |                               ~^   ~~~~~~~~~~~
+      |                                |   |
+      |                                |   uint32_t {aka long unsigned int}
+      |                                unsigned int
+      |                               %lu
+arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MDP_STM32.elf
+ 
+arm-none-eabi-size  MDP_STM32.elf 
+arm-none-eabi-objdump -h -S MDP_STM32.elf  > "MDP_STM32.list"
+   text	   data	    bss	    dec	    hex	filename
+  36448	    468	   3396	  40312	   9d78	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+Finished building: MDP_STM32.list
+ 
+15:48:33 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-size  MDP_STM32.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36448	    468	   3396	  40312	   9d78	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+15:51:07 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/motor.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/motor.d" -MT"Core/Src/motor.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/motor.o"
+../Core/Src/motor.c: In function 'motor_forward':
+../Core/Src/motor.c:131:5: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  131 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:11:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   10 | #include "motor.h"
+  +++ |+#include <stdio.h>
+   11 | 
+../Core/Src/motor.c:131:5: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  131 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:131:5: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:131:13: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  131 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |             ^~~
+      |             |
+      |             uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:131:13: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:131:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  131 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |                                 ~^   ~~~~~~~~~~~~~
+      |                                  |   |
+      |                                  |   uint32_t {aka long unsigned int}
+      |                                  unsigned int
+      |                                 %lu
+../Core/Src/motor.c:147:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  147 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+In file included from ../Core/Inc/motor.h:14,
+                 from ../Core/Src/motor.c:10:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:152:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  152 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:152:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:152:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  152 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'motor_backward':
+../Core/Src/motor.c:177:5: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  177 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |     ^~~~~~~
+../Core/Src/motor.c:177:5: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:177:13: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  177 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |             ^~~
+      |             |
+      |             uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:177:13: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:177:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  177 |     sprintf(buf, "target_pulse: %u", target_pulses);
+      |                                 ~^   ~~~~~~~~~~~~~
+      |                                  |   |
+      |                                  |   uint32_t {aka long unsigned int}
+      |                                  unsigned int
+      |                                 %lu
+../Core/Src/motor.c:193:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  193 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:198:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  198 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:198:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:198:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  198 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'turn_left':
+../Core/Src/motor.c:250:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  250 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:255:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  255 |         sprintf(buf, "%u", encoder_cnt);
+      |         ^~~~~~~
+../Core/Src/motor.c:255:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:255:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  255 |         sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~
+      |                 |
+      |                 uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:255:17: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:255:24: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  255 |         sprintf(buf, "%u", encoder_cnt);
+      |                       ~^   ~~~~~~~~~~~
+      |                        |   |
+      |                        |   uint32_t {aka long unsigned int}
+      |                        unsigned int
+      |                       %lu
+../Core/Src/motor.c: In function 'turn_right':
+../Core/Src/motor.c:283:31: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  283 |         OLED_ShowString(0, 0, "encoder_cnt: ");
+      |                               ^~~~~~~~~~~~~~~
+      |                               |
+      |                               char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/motor.c:288:17: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  288 |                 sprintf(buf, "%u", encoder_cnt);
+      |                 ^~~~~~~
+../Core/Src/motor.c:288:17: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/motor.c:288:25: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  288 |                 sprintf(buf, "%u", encoder_cnt);
+      |                         ^~~
+      |                         |
+      |                         uint8_t * {aka unsigned char *}
+../Core/Src/motor.c:288:25: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+../Core/Src/motor.c:288:32: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  288 |                 sprintf(buf, "%u", encoder_cnt);
+      |                               ~^   ~~~~~~~~~~~
+      |                                |   |
+      |                                |   uint32_t {aka long unsigned int}
+      |                                unsigned int
+      |                               %lu
+arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MDP_STM32.elf
+ 
+arm-none-eabi-size  MDP_STM32.elf 
+arm-none-eabi-objdump -h -S MDP_STM32.elf  > "MDP_STM32.list"
+   text	   data	    bss	    dec	    hex	filename
+  36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+Finished building: MDP_STM32.list
+ 
+15:51:15 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-size  MDP_STM32.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
+Finished building: default.size.stdout
+ 

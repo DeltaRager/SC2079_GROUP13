@@ -114,6 +114,7 @@ void motor_stop() {
 
 void motor_forward_inf() {
 	servo_set_val(STRAIGHT);
+	HAL_Delay(500);
 	move(-1);
 	HAL_Delay(500);
 }
@@ -159,6 +160,7 @@ void motor_forward(uint32_t distance) {
 
 void motor_backward_inf() {
 	servo_set_val(STRAIGHT);
+	HAL_Delay(500);
 	move(-1);
 	HAL_Delay(500);
 }
@@ -227,12 +229,12 @@ void motor_backward_left() {
 }
 
 void turn_left(uint16_t deg) {
+	HAL_Delay(500);
 	servo_set_val(LEFT);
-	uint8_t buf[100];
-	//uint32_t left_circumference = -1.0/36 * deg*deg + 65.0/6 * deg + 7650;
-	uint32_t left_circumference = 8575;
+	HAL_Delay(500);
 
-	HAL_Delay(1000);
+	uint8_t buf[100];
+	uint32_t left_circumference = 8575;
 
     // Reset encoder count
     reset_encoders();
@@ -260,11 +262,12 @@ void turn_left(uint16_t deg) {
 }
 
 void turn_right(uint16_t deg) {
+	HAL_Delay(500);
 	servo_set_val(RIGHT);
+	HAL_Delay(500);
+
 	uint8_t buf[100];
 	uint32_t right_circumference = 17500;
-
-	HAL_Delay(1000);
 
 	// Reset encoder count
 	reset_encoders();

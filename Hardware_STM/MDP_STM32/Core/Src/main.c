@@ -129,6 +129,7 @@ int main(void)
   // Abhinav's Task: left - right - right - backward -
   for (int i = 0; i < 3; i++) {
 	  turn_right(90);
+	  HAL_Delay(1000);
 	  servo_set_val(STRAIGHT);
 	  HAL_Delay(1000);
 
@@ -136,9 +137,9 @@ int main(void)
 	  turn_left(90);
 	  HAL_Delay(2000);
 	  motor_backward_inf();
-	  HAL_Delay(5000);
+	  HAL_Delay(3500);
 	  motor_stop();
-	  HAL_Delay(3000);
+	  HAL_Delay(2000);
   }
 
 
