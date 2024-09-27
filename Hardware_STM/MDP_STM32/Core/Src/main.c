@@ -82,7 +82,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  uint8_t buffer[100] = "Hello";
+  uint8_t buffer[100];
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -115,34 +115,67 @@ int main(void)
   motor_init(&htim8, &htim2, &htim3);
   servo_init(&htim1);
 
-  // Setup
-  OLED_ShowString(0, 0, "Press USER button");
+  // USER button
+  OLED_ShowString(0, 0, "Press USER btn");
   OLED_ShowString(0, 15, "to continue");
   OLED_Refresh_Gram();
-
-  // Set servo
-  servo_set_val(4700);
+  servo_set_val(STRAIGHT);
 
   while (!is_USER_button_pressed());
   OLED_Clear();
-  OLED_ShowString(0, 0, "Hello");
-  OLED_Refresh_Gram();
-
   motor_set_speed(20);
-  HAL_Delay(1000);
-  motor_forward(120);
 
-//  motor_setDrive(1, 30);
-//  HAL_Delay(4000);
-//  setDriveDir(0);
 
-  // servo_setVal(7500);
-  // motor_setDrive(1, 20);
+  // Abhinav's Task: left - right - right - backward -
+  for (int i = 0; i < 3; i++) {
+	  turn_right(90);
+	  servo_set_val(STRAIGHT);
+	  HAL_Delay(1000);
 
-  // HAL_UART_Receive(&huart3, buffer, 100, 6000);
-  // HAL_Delay(1000);
-  // OLED_ShowString(0, 0, buffer);
-  // OLED_Refresh_Gram();
+	  turn_left(90);
+	  turn_left(90);
+	  HAL_Delay(2000);
+	  motor_backward_inf();
+	  HAL_Delay(5000);
+	  motor_stop();
+	  HAL_Delay(3000);
+  }
+
+
+  // Task A3
+//  uint32_t dist = 100;
+//  servo_set_val(STRAIGHT);
+//  motor_set_speed(20);
+//  HAL_Delay(1000);
+//  motor_forward(dist);
+
+
+  // Task A4 LEFT
+//  uint16_t angle = 360;
+//  servo_set_val(LEFT);
+//  motor_set_speed(20);
+//
+//  for (int i = 0; i < angle / 90; angle -= 90)
+//	  turn_left(90);
+
+  // Task A4 RIGHT
+//    uint16_t angle = 360;
+//    servo_set_val(RIGHT);
+//    motor_set_speed(20);
+//
+//    for (int i = 0; i < angle / 90; angle -= 90)
+//  	  turn_right(90);
+
+  // Task A1
+//  if (buffer[0] == 'a') {
+//  		servo_set_val(LEFT);
+//  		HAL_Delay(2000);
+//  		OLED_Clear();
+//  		OLED_ShowString(0, 0, "Left");
+//  		OLED_Refresh_Gram();
+//  		turn_left(90);
+//  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -152,6 +185,42 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	HAL_UART_Receive(&huart3, buffer, 1, 3000);
+	memset(buffer, 0, sizeof(buffer));
+	OLED_ShowString(0, 0, buffer);
+	OLED_Refresh_Gram();
+
+	HAL_UART_Receive(&huart3, buffer, 1, 3000);
+
+	if (buffer[0] == 'w') {
+		servo_set_val(STRAIGHT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Forward");
+		OLED_Refresh_Gram();
+		motor_forward(80);
+	} else if (buffer[0] == 's') {
+		servo_set_val(STRAIGHT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Backward");
+		OLED_Refresh_Gram();
+		motor_backward_inf();
+	} else if (buffer[0] == 'a') {
+		servo_set_val(LEFT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Left");
+		OLED_Refresh_Gram();
+		turn_left(90);
+	} else if (buffer[0] == 'd') {
+		servo_set_val(RIGHT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Right");
+		OLED_Refresh_Gram();
+		turn_right(90);
+	}
   }
   /* USER CODE END 3 */
 }

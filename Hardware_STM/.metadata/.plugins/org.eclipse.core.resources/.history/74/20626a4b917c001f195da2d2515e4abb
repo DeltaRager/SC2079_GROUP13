@@ -1,0 +1,286 @@
+/*
+ * motor.c
+ *
+ *  Created on: Sep 10, 2024
+ *      Author: AD
+ *
+ *  Control the motor (back wheels)
+ */
+
+#include "motor.h"
+
+
+// Timers for PWM, L and R Encoders
+TIM_HandleTypeDef *motor_pwm_tim, *l_enc_tim, *r_enc_tim;
+
+// For matching motor speeds.
+int16_t pwmValAccel = 0, pwmValTarget = 0, lPwmVal = 0, rPwmVal = 0;
+
+
+void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleTypeDef* r_enc) {
+	// Assign timer pointers
+	motor_pwm_tim = pwm;
+	l_enc_tim = l_enc;
+	r_enc_tim = r_enc;
+
+	// Start Encoders and PWM for L, R motors
+	HAL_TIM_Encoder_Start_IT(l_enc, TIM_CHANNEL_ALL);
+	HAL_TIM_Encoder_Start_IT(r_enc, TIM_CHANNEL_ALL);
+	HAL_TIM_PWM_Start(pwm, L_CHANNEL);
+	HAL_TIM_PWM_Start(pwm, R_CHANNEL);
+}
+
+void move(int8_t dir) {
+	// 0: stop, 1: forward, -1: backward
+	if (dir == 0) {
+		HAL_GPIO_WritePin(MOTOR_A_IN1_GPIO_Port, MOTOR_A_IN1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(MOTOR_A_IN2_GPIO_Port, MOTOR_A_IN2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(MOTOR_B_IN1_GPIO_Port, MOTOR_B_IN1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(MOTOR_B_IN2_GPIO_Port, MOTOR_B_IN2_Pin, GPIO_PIN_RESET);
+	} else if (dir == 1) {
+		HAL_GPIO_WritePin(MOTOR_A_IN1_GPIO_Port, MOTOR_A_IN1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(MOTOR_A_IN2_GPIO_Port, MOTOR_A_IN2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(MOTOR_B_IN1_GPIO_Port, MOTOR_B_IN1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(MOTOR_B_IN2_GPIO_Port, MOTOR_B_IN2_Pin, GPIO_PIN_RESET);
+	} else if (dir == -1) {
+		HAL_GPIO_WritePin(MOTOR_A_IN1_GPIO_Port, MOTOR_A_IN1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(MOTOR_A_IN2_GPIO_Port, MOTOR_A_IN2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(MOTOR_B_IN1_GPIO_Port, MOTOR_B_IN1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(MOTOR_B_IN2_GPIO_Port, MOTOR_B_IN2_Pin, GPIO_PIN_SET);
+	}
+}
+
+int16_t get_speed_pwm(uint8_t speed) {
+	int16_t val = (int16_t)(MOTOR_PWM_MAX / 100 * speed);
+	return val;
+}
+
+// Speed: 0 - 100
+void motor_set_speed(uint8_t speed) {
+	pwmValTarget = get_speed_pwm(speed);
+	lPwmVal = pwmValTarget;
+	rPwmVal = pwmValTarget;
+	set_pwm_LR();
+}
+
+void reset_encoders() {
+	// Reset timers
+	__HAL_TIM_SET_COUNTER(l_enc_tim, 0);
+	__HAL_TIM_SET_COUNTER(r_enc_tim, 0);
+}
+
+void set_pwm_LR() {
+	// Set L, R channels
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL,
+		lPwmVal > MOTOR_PWM_MAX
+		? MOTOR_PWM_MAX
+		: lPwmVal < MOTOR_PWM_MIN
+		? MOTOR_PWM_MIN
+		: lPwmVal);
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL,
+		rPwmVal > MOTOR_PWM_MAX
+		? MOTOR_PWM_MAX
+		: rPwmVal < MOTOR_PWM_MIN
+		? MOTOR_PWM_MIN
+		: rPwmVal);
+}
+
+// Speed: 0 - 100
+void motor_get_drive(int8_t dir, uint8_t speed) {
+	// Stop
+	if (dir == 0) {
+		motor_stop();
+		return;
+	}
+
+	// Derive PWM value
+	pwmValTarget = get_speed_pwm(speed);
+	lPwmVal = pwmValTarget;
+	rPwmVal = pwmValTarget;
+
+	// Reset encoders
+	reset_encoders();
+
+	// Move
+	move(dir);
+	set_pwm_LR();
+}
+
+
+/*---------- Movement ----------*/
+void motor_stop() {
+	move(0);
+}
+
+void motor_forward_inf() {
+	move(1);
+}
+
+void motor_forward(uint32_t distance) {
+	float wheel_radius = 3.4;							// Wheel radius (cm)
+    float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
+    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 (30x reducer) = 330
+    float pulses_per_cm = pulses_per_rev / circumference;
+
+    uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
+
+	uint8_t buf[100];
+    sprintf(buf, "target_pulse: %u", target_pulses);
+
+	OLED_Clear();
+	OLED_ShowString(0, 15, buf);
+	OLED_Refresh_Gram();
+
+	HAL_Delay(2000);
+    
+    // Reset encoder count
+    reset_encoders();
+    uint32_t encoder_cnt = 65535;
+
+    // Move forward
+	move(1);
+
+	OLED_Clear();
+	OLED_ShowString(0, 0, "encoder_cnt: ");
+	OLED_Refresh_Gram();
+
+    while (65535 - encoder_cnt < target_pulses) {
+        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+        sprintf(buf, "%u", encoder_cnt);
+        OLED_ShowString(0, 30, buf);
+		OLED_Refresh_Gram();
+    }
+    
+    // Stop the motors when the target distance is reached
+    move(0);
+}
+
+void motor_backward_inf() {
+	move(-1);
+}
+
+void motor_backward(uint32_t distance) {
+	float wheel_radius = 3.4;							// Wheel radius (cm)
+    float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
+    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 (30x reducer) = 330
+    float pulses_per_cm = pulses_per_rev / circumference;
+
+    uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
+
+	uint8_t buf[100];
+    sprintf(buf, "target_pulse: %u", target_pulses);
+
+	OLED_Clear();
+	OLED_ShowString(0, 0, buf);
+	OLED_Refresh_Gram();
+
+	HAL_Delay(2000);
+
+    // Reset encoder count
+    reset_encoders();
+    uint32_t encoder_cnt = 65535;
+
+    // Move backward
+	move(-1);
+
+	OLED_Clear();
+	OLED_ShowString(0, 0, "encoder_cnt: ");
+	OLED_Refresh_Gram();
+
+    while (65535 - encoder_cnt < target_pulses) {
+        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+        sprintf(buf, "%u", encoder_cnt);
+        OLED_ShowString(0, 30, buf);
+		OLED_Refresh_Gram();
+    }
+
+    // Stop the motors when the target distance is reached
+    move(0);
+}
+
+void motor_forward_right() {
+	// Servo direction: 1 -> RIGHT
+	servo_set_direction(1);
+	move(1);
+}
+
+void motor_forward_left() {
+	// Servo direction: -1 -> LEFT
+	servo_set_direction(-1);
+	move(1);
+}
+
+void motor_backward_right() {
+	// Servo direction: RIGHT
+	servo_set_direction(1);
+	move(-1);
+}
+
+void motor_backward_left() {
+	// Servo direction: LEFT
+	servo_set_direction(-1);
+	move(-1);
+}
+
+void turn_left(uint16_t deg) {
+	uint8_t buf[100];
+	uint32_t left_circumference = 8100 + (10.0 / 3*deg);
+
+	HAL_Delay(2000);
+
+    // Reset encoder count
+    reset_encoders();
+    uint32_t encoder_cnt = 65535;
+
+    // Length
+    float arc_length = (1.0 * deg / 360) * left_circumference;
+
+    // Move forward
+	move(1);
+
+	OLED_Clear();
+	OLED_ShowString(0, 0, "encoder_cnt: ");
+	OLED_Refresh_Gram();
+
+    while (65535.0 - 1.0 * encoder_cnt < arc_length) {
+        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+        sprintf(buf, "%u", encoder_cnt);
+        OLED_ShowString(0, 30, buf);
+		OLED_Refresh_Gram();
+    }
+
+    // Stop the motors when the target distance is reached
+    move(0);
+}
+
+void turn_right(uint16_t deg) {
+	uint8_t buf[100];
+	uint32_t pulses_per_rev = 1500;
+	uint32_t right_circumference = 17700 + (10.0/9*deg);
+
+	HAL_Delay(2000);
+
+	// Reset encoder count
+	reset_encoders();
+	uint32_t encoder_cnt = 65535;
+
+	// Length
+	float arc_length = (1.0 * deg / 360) * right_circumference;
+
+	// Move forward
+	move(1);
+
+	OLED_Clear();
+	OLED_ShowString(0, 0, "encoder_cnt: ");
+	OLED_Refresh_Gram();
+
+	while (65535 - encoder_cnt < arc_length) {
+		encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+		sprintf(buf, "%u", encoder_cnt);
+		OLED_ShowString(0, 30, buf);
+		OLED_Refresh_Gram();
+	}
+
+	// Stop the motors when the target distance is reached
+	move(0);
+}

@@ -61,7 +61,7 @@ main-build: MDP_STM32.elf secondary-outputs
 
 # Tool invocations
 MDP_STM32.elf MDP_STM32.map: $(OBJS) $(USER_OBJS) D:\3.\ CE\ Timetable\ and\ Curriculum\7.\ AY2023-2024\ Sem\ 1\ (Year\ 4)\1.\ SC2079\ -\ Multidisciplinary\ Design\ Project\4.\ Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

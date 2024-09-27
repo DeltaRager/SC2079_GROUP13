@@ -9,11 +9,8 @@
 
 #include "servo.h"
 
-TIM_HandleTypeDef* pwm_tim;
 
-#define STRAIGHT	4690
-#define LEFT		3000
-#define RIGHT		7800
+TIM_HandleTypeDef* pwm_tim;
 
 void servo_init(TIM_HandleTypeDef* pwm) {
 	pwm_tim = pwm;

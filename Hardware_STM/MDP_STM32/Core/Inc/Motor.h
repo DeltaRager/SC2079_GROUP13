@@ -19,8 +19,8 @@
 // PWM Parameters
 #define MOTOR_PWM_PERIOD		7200
 #define MOTOR_PWM_MAX 			6000 // Safe value
-#define MOTOR_PWM_MIN 			375  // Min speed
-// #define MOTOR_PWM_MIN 			0  // Min speed
+//#define MOTOR_PWM_MIN 			375  // Min speed
+#define MOTOR_PWM_MIN 			0  // Min speed
 #define MOTOR_PWM_ACCEL 		20 	 // Max change in PWM value allowed (smooth transitioning)
 //#define MOTOR_PWM_DECCEL 100 //maximum negative change in PWM value allowed (smooth transitioning)
 #define MOTOR_PWM_OFFSET_MAX_PERCENT	0.05f //maximum offset allowed (percentage of target PWM)
@@ -34,7 +34,7 @@
 
 
 void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleTypeDef* r_enc);
-void move(uint8_t dir);
+void move(int8_t dir);
 void set_pwm_LR();
 int16_t get_speed_pwm(uint8_t speed);
 void motor_set_speed(uint8_t speed);
@@ -50,6 +50,7 @@ void motor_forward_right();
 void motor_forward_left();
 void motor_backward_right();
 void motor_backward_left();
-
+void turn_left(uint16_t deg);
+void turn_right(uint16_t deg);
 
 #endif /* INC_MOTOR_H_ */
