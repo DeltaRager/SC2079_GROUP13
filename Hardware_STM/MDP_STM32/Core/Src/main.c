@@ -25,6 +25,7 @@
 #include "helper.h"
 #include "motor.h"
 #include "servo.h"
+#include "ICM20948.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -71,7 +72,8 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t readGyroZData[2];
+int16_t gyroZ;
 /* USER CODE END 0 */
 
 /**
@@ -91,7 +93,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  ICM20948_init(&hi2c1,0,GYRO_FULL_SCALE_2000DPS);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -123,24 +125,24 @@ int main(void)
 
   while (!is_USER_button_pressed());
   OLED_Clear();
-  motor_set_speed(20);
+//  motor_set_speed(20);
 
 
-  // Abhinav's Task: left - right - right - backward -
-  for (int i = 0; i < 3; i++) {
-	  turn_right(90);
-	  HAL_Delay(1000);
-	  servo_set_val(STRAIGHT);
-	  HAL_Delay(1000);
-
-	  turn_left(90);
-	  turn_left(90);
-	  HAL_Delay(2000);
-	  motor_backward_inf();
-	  HAL_Delay(3500);
-	  motor_stop();
-	  HAL_Delay(2000);
-  }
+//  // Abhinav's Task: left - right - right - backward -
+//  for (int i = 0; i < 3; i++) {
+//	  turn_right(90);
+//	  HAL_Delay(1000);
+//	  servo_set_val(STRAIGHT);
+//	  HAL_Delay(1000);
+//
+//	  turn_left(90);
+//	  turn_left(90);
+//	  HAL_Delay(2000);
+//	  motor_backward_inf();
+//	  HAL_Delay(3500);
+//	  motor_stop();
+//	  HAL_Delay(2000);
+//  }
 
 
   // Task A3
@@ -186,42 +188,43 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	HAL_UART_Receive(&huart3, buffer, 1, 3000);
-	memset(buffer, 0, sizeof(buffer));
-	OLED_ShowString(0, 0, buffer);
+	__Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
+//	HAL_UART_Receive(&huart3, buffer, 1, 3000);
+//	memset(buffer, 0, sizeof(buffer));
+	OLED_ShowString(0, 0, gyroZ);
 	OLED_Refresh_Gram();
 
-	HAL_UART_Receive(&huart3, buffer, 1, 3000);
-
-	if (buffer[0] == 'w') {
-		servo_set_val(STRAIGHT);
-		HAL_Delay(500);
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Forward");
-		OLED_Refresh_Gram();
-		motor_forward(80);
-	} else if (buffer[0] == 's') {
-		servo_set_val(STRAIGHT);
-		HAL_Delay(500);
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Backward");
-		OLED_Refresh_Gram();
-		motor_backward_inf();
-	} else if (buffer[0] == 'a') {
-		servo_set_val(LEFT);
-		HAL_Delay(500);
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Left");
-		OLED_Refresh_Gram();
-		turn_left(90);
-	} else if (buffer[0] == 'd') {
-		servo_set_val(RIGHT);
-		HAL_Delay(500);
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Right");
-		OLED_Refresh_Gram();
-		turn_right(90);
-	}
+//	HAL_UART_Receive(&huart3, buffer, 1, 3000);
+//
+//	if (buffer[0] == 'w') {
+//		servo_set_val(STRAIGHT);
+//		HAL_Delay(500);
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Forward");
+//		OLED_Refresh_Gram();
+//		motor_forward(80);
+//	} else if (buffer[0] == 's') {
+//		servo_set_val(STRAIGHT);
+//		HAL_Delay(500);
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Backward");
+//		OLED_Refresh_Gram();
+//		motor_backward_inf();
+//	} else if (buffer[0] == 'a') {
+//		servo_set_val(LEFT);
+//		HAL_Delay(500);
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Left");
+//		OLED_Refresh_Gram();
+//		turn_left(90);
+//	} else if (buffer[0] == 'd') {
+//		servo_set_val(RIGHT);
+//		HAL_Delay(500);
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Right");
+//		OLED_Refresh_Gram();
+//		turn_right(90);
+//	}
   }
   /* USER CODE END 3 */
 }
