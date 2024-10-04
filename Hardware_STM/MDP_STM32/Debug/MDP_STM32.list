@@ -1393,8 +1393,8 @@ int main(void)
  800100a:	f001 fcbd 	bl	8002988 <HAL_Delay>
 	  motor_backward_inf();
  800100e:	f000 fd99 	bl	8001b44 <motor_backward_inf>
-	  HAL_Delay(3500);
- 8001012:	f640 50ac 	movw	r0, #3500	@ 0xdac
+	  HAL_Delay(3000);
+ 8001012:	f640 30b8 	movw	r0, #3000	@ 0xbb8
  8001016:	f001 fcb7 	bl	8002988 <HAL_Delay>
 	  motor_stop();
  800101a:	f000 fcf9 	bl	8001a10 <motor_stop>

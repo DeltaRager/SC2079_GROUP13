@@ -137,7 +137,7 @@ int main(void)
 	  turn_left(90);
 	  HAL_Delay(2000);
 	  motor_backward_inf();
-	  HAL_Delay(3500);
+	  HAL_Delay(3000);
 	  motor_stop();
 	  HAL_Delay(2000);
   }

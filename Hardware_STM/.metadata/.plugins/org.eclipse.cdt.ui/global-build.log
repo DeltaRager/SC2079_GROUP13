@@ -28495,3 +28495,74 @@ arm-none-eabi-size  MDP_STM32.elf
   36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
 Finished building: default.size.stdout
  
+15:54:24 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:119:25: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  119 |   OLED_ShowString(0, 0, "Press USER btn");
+      |                         ^~~~~~~~~~~~~~~~
+      |                         |
+      |                         char *
+In file included from ../Core/Src/main.c:24:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:120:26: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  120 |   OLED_ShowString(0, 15, "to continue");
+      |                          ^~~~~~~~~~~~~
+      |                          |
+      |                          char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:200:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  200 |                 OLED_ShowString(0, 0, "Forward");
+      |                                       ^~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:207:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  207 |                 OLED_ShowString(0, 0, "Backward");
+      |                                       ^~~~~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:214:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  214 |                 OLED_ShowString(0, 0, "Left");
+      |                                       ^~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:221:39: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  221 |                 OLED_ShowString(0, 0, "Right");
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+arm-none-eabi-gcc -o "MDP_STM32.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP_STM32\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDP_STM32.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MDP_STM32.elf
+ 
+arm-none-eabi-size  MDP_STM32.elf 
+arm-none-eabi-objdump -h -S MDP_STM32.elf  > "MDP_STM32.list"
+   text	   data	    bss	    dec	    hex	filename
+  36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
+Finished building: MDP_STM32.list
+ 
+15:54:28 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+make -j8 all 
+arm-none-eabi-size  MDP_STM32.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
+Finished building: default.size.stdout
+ 
