@@ -16,7 +16,9 @@
 
 #define SERVO_PWM_CHANNEL TIM_CHANNEL_1
 #define STRAIGHT	4712
-#define LEFT		3000	// 38 degree
+//#define LEFT		3000	// 38 degree
+
+#define LEFT		3500
 #define RIGHT		7500	// 25 degree
 
 void servo_init(TIM_HandleTypeDef* pwm);

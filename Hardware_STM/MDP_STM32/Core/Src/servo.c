@@ -18,6 +18,7 @@ void servo_init(TIM_HandleTypeDef* pwm) {
 }
 
 void servo_set_val(uint32_t val) {
+	HAL_Delay(500);
 	pwm_tim->Instance->CCR1 = val;
 }
 
@@ -30,7 +31,7 @@ void servo_set_direction(uint8_t dir) {
 		ccr_value = RIGHT;
 	}
 
-	servo_setVal(ccr_value);
-	print_value(0, 0, "ccr_value: %u", ccr_value);
+	servo_set_val(ccr_value);
+	// print_value(0, 0, "ccr_value: %u", ccr_value);
 }
 

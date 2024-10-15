@@ -1,10 +1,10 @@
-15:54:28 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+21:29:54 **** Incremental Build of configuration Debug for project MDP_STM32 ****
 make -j8 all 
 arm-none-eabi-size  MDP_STM32.elf 
    text	   data	    bss	    dec	    hex	filename
-  36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
+  38308	    468	   3508	  42284	   a52c	MDP_STM32.elf
 Finished building: default.size.stdout
  
 
-15:54:28 Build Finished. 0 errors, 0 warnings. (took 211ms)
+21:29:55 Build Finished. 0 errors, 0 warnings. (took 265ms)
 

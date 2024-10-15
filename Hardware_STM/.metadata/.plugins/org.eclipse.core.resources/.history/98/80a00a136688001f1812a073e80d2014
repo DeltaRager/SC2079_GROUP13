@@ -1,0 +1,104 @@
+/*
+ * Sensor.c
+ *
+ *  Created on: Sep 10, 2024
+ *      Author: AD
+ *
+ *  Control sensors (ICM20948)
+ */
+
+#include "sensor.h"
+#include "helper.h"
+
+
+// Pointers
+I2C_HandleTypeDef* hi2c_ptr;
+TIM_HandleTypeDef* hic_ptr;
+sensor_t* sensor_ptr;
+const uint8_t GYRO_SEN = GYRO_FULL_SCALE_250DPS;
+const uint8_t ACCEL_SEN = ACCEL_FULL_SCALE_2G;
+
+void sensors_init(I2C_HandleTypeDef* i2c_ptr, TIM_HandleTypeDef* ic_ptr, sensor_t* ss_ptr) {
+	hi2c_ptr = i2c_ptr;
+	hic_ptr = ic_ptr;
+	sensor_ptr = ss_ptr;
+
+	ICM20948_init(hi2c_ptr, ICM_I2C_ADDR, GYRO_SEN, ACCEL_SEN);
+	HAL_TIM_IC_Start_IT(ic_ptr, US_IC_CHANNEL);
+
+	ss_ptr->gyroZ_bias = 0;
+	ss_ptr->accel_bias[0] = 0;
+	ss_ptr->accel_bias[1] = 0;
+	ss_ptr->accel_bias[2] = 0;
+}
+
+/*---------- Gyroscope (z-axis) Sensors ----------*/
+void sensors_read_gyroZ() {
+	float val;
+	ICM20948_readGyroscope_Z(hi2c_ptr, ICM_I2C_ADDR, GYRO_SEN, &val);
+	sensor_ptr->gyroZ = (val - sensors_ptr->gyroZ_bias) / 1000; //convert to ms
+}
+
+void sensors_read_accel() {
+	float accel_new[3];
+
+	ICM20948_readAccelerometer_all(hi2c_ptr, ICM_I2C_ADDR, ACCEL_SEN, accel_new);
+	for (int i = 0; i < 3; i++)
+		sensors_ptr->accel[i] = (accel_new[i] - sensors_ptr->accel_bias[i]) * GRAVITY;
+}
+
+
+
+/*------------ Ultrasonic Sensors -----------*/ 
+void delay_us(uint16_t us) {
+	__HAL_TIM_SET_COUNTER(&htim6, 0);
+	while(__HAL_TIM_GET_COUNTER(&htim6) < us);
+}
+
+void HCSR04_Init() {
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+	
+	__HAL_TIM_SET_CAPTUREPOLARITY(&htim1, TIM_CHANNEL_4, TIM_INPUTCHANNELPOLARITY_RISING);
+	HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_4);
+	HAL_TIM_Base_Start_IT(&htim1);
+	// HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+	// HAL_Delay(100);
+
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_SET);     // pull the TRIG pin HIGH
+	delay_us(10);                                                        // wait for 10 us
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+	__HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+}
+
+void HCSR04_Trigger() {
+	// HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+	// HAL_Delay(100);
+
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_SET);     // pull the TRIG pin HIGH
+	delay_us(10);                                                        // wait for 10 us
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+	__HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim_ptr) {
+	if (htim_ptr->Channel != HAL_TIM_ACTIVE_CHANNEL_4)
+		return;
+
+	if (!is_first_captured) {                                   // If the first value is not captured
+		tc1 = HAL_TIM_ReadCapturedValue(htim_ptr, TIM_CHANNEL_4); // read the first value
+		is_first_captured = true;                                 // set the first captured as true
+		// Now change the polarity to falling edge
+		__HAL_TIM_SET_CAPTUREPOLARITY(htim_ptr, TIM_CHANNEL_4, TIM_INPUTCHANNELPOLARITY_FALLING);
+	} else if (is_first_captured) {                             // If the first is already captured
+		tc2 = HAL_TIM_ReadCapturedValue(htim_ptr, TIM_CHANNEL_4); // read second value
+		__HAL_TIM_SET_COUNTER(htim_ptr, 0);                       // reset the counter
+
+		echo = (tc2 > tc1) ? (tc2 - tc1) : (0xffff - tc1 + tc2);
+		dist = echo * 0.034/2;
+		is_first_captured = false;                                // set it back to false
+
+		// Set polarity to rising edge
+		__HAL_TIM_SET_CAPTUREPOLARITY(htim_ptr, TIM_CHANNEL_4, TIM_INPUTCHANNELPOLARITY_RISING);
+		__HAL_TIM_DISABLE_IT(&htim1, TIM_IT_CC4);
+	}
+}

@@ -16,7 +16,6 @@ bool is_USER_button_pressed() {
 }
 
 void print_value(int x, int y, uint8_t* msg, int32_t val) {
-	OLED_Clear();
 	uint8_t* buf[100];
 	sprintf(buf, msg, val);
 	OLED_ShowString(x, y, buf);
@@ -24,169 +23,279 @@ void print_value(int x, int y, uint8_t* msg, int32_t val) {
 }
 
 
-/*---------- ICM20948 ----------*/
-// void ICM20948_init(
-// 	I2C_HandleTypeDef* hi2c,
-// 	uint8_t I2C_address,
-// 	uint8_t gyro_sensitivity,
-// 	uint8_t accel_sensitivity) {
-// 	HAL_StatusTypeDef status = HAL_OK;
+/*-------------- COMMANDS --------------*/
+void send_ack(UART_HandleTypeDef* uart_ptr) {
+	uint8_t ack[] = "l";
+	HAL_UART_Transmit(uart_ptr, ack, sizeof(ack), 2000);
+}
 
-// 	status = _ICM20948_SelectUserBank(hi2c, selectI2cAddress, USER_BANK_0);
-
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_0__PWR_MGMT_1__REGISTER,
-// 			ICM20948_RESET);
-
-// 	HAL_Delay(200);
-
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_0__PWR_MGMT_1__REGISTER,
-// 			ICM20948_AUTO_SELECT_CLOCK);
-
-// 	//enable both gyroscope and accelerometer
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_0__PWR_MGMT_2__REGISTER,
-// 			ICM20948_DISABLE_SENSORS); // For some reason this needs to be tested
-
-// 	status = _ICM20948_SelectUserBank(hi2c, selectI2cAddress, USER_BANK_2);
-
-// 	////temperature configuration.
-// 	//	status = _ICM20948_WriteByte(
-// 	//			hi2c,
-// 	//			selectI2cAddress,
-// 	//			ICM20948__USER_BANK_2__TEMP_CONFIG__REGISTER,
-// 	//			0x03);
-
-// 	//gyroscope sampling rate settings.
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_2__GYRO_CONFIG_1__REGISTER,
-// 			0 << GYRO_DLPFCFG_BIT|selectGyroSensitivity << GYRO_FS_SEL_BIT|EN_GRYO_DLPF << GYRO_FCHOICE_BIT);
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_2__GYRO_SMPLRT_DIV__REGISTER,
-// 			4);
-
-// 	//accelerometer sampling rate settings.
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_2__ACCEL_CONFIG__REGISTER,
-// 			1 << ACCEL_DLPFCFG_BIT|selectAccelSensitivity << ACCEL_FS_SEL_BIT|0x01 << ACCEL_FCHOICE_BIT);
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_2__ACCEL_SMPLRT_DIV_2__REGISTER,
-// 			4);
+void move(uint8_t cmd) {
+	switch (cmd) {
+	case 'w':
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Forward");
+		OLED_Refresh_Gram();
+		motor_forward(30);
+		break;
+	case 's':
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Backward");
+		OLED_Refresh_Gram();
+		motor_backward(30);
+		break;
+	case 'a':
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Turn left");
+		OLED_Refresh_Gram();
+		motor_forward_left();
+		break;
+	case 'd':
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Turn right");
+		OLED_Refresh_Gram();
+		motor_forward_right();
+		break;
+	case 'x':
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Stop");
+		OLED_Refresh_Gram();
+		move_straight(0);
+		break;
+	}
+}
 
 
-// 	status = _ICM20948_SelectUserBank(hi2c, selectI2cAddress, USER_BANK_0);
+/*-------------- ICM20948 --------------*/
+HAL_StatusTypeDef ICM20948_BrustRead(
+	I2C_HandleTypeDef* hi2c_ptr, 
+	uint8_t sel_I2C_addr, 
+	uint8_t start_addr, 
+	uint16_t number_of_reg_to_read, 
+	uint8_t* read_data) {	
+	HAL_StatusTypeDef status = HAL_OK;
+	uint8_t device_I2C_addr = 
+		(sel_I2C_addr == 0) ? 
+		ICM20948_I2C_SLAVE_ADDR_1 : 
+		ICM20948_I2C_SLAVE_ADDR_1;
 
-// 	status = _ICM20948_WriteByte(
-// 			hi2c,
-// 			selectI2cAddress,
-// 			ICM20948__USER_BANK_0__INT_PIN_CFG__REGISTER,
-// 			0x02); // Don't understand how this works
+	status = HAL_I2C_Mem_Read(
+		hi2c_ptr,
+		device_I2C_addr << 1,
+		start_addr,
+		I2C_MEMADD_SIZE_8BIT,
+		read_data,
+		number_of_reg_to_read * I2C_MEMADD_SIZE_8BIT,
+		10
+	);
 
-// 	status = _AK09916_WriteByte(
-// 			hi2c,
-// 			AK09916__CNTL2__REGISTER,
-// 			0x08);
-// }
+	return status;
+}
 
-// HAL_StatusTypeDef _ICM20948_BrustRead(I2C_HandleTypeDef * hi2c, uint8_t selectI2cAddress, uint8_t startAddress, uint16_t amountOfRegistersToRead, uint8_t* readData) {
-// 	HAL_StatusTypeDef status = HAL_OK;
-// 	uint8_t deviceI2CAddress = (selectI2cAddress == 0)? ICM20948__I2C_SLAVE_ADDRESS_1: ICM20948__I2C_SLAVE_ADDRESS_2;
+HAL_StatusTypeDef ICM20948_SelectUserBank(
+	I2C_HandleTypeDef* hi2c_ptr, 
+	uint8_t const sel_I2C_addr, 
+	int user_bank_num) {
+	HAL_StatusTypeDef status = HAL_OK;
+	uint8_t write_data = user_bank_num << BIT_4;
+	uint8_t device_I2C_addr = 
+		(sel_I2C_addr == 0) ? 
+		ICM20948_I2C_SLAVE_ADDR_1 : 
+		ICM20948_I2C_SLAVE_ADDR_2;
 
-// 	status = HAL_I2C_Mem_Read(
-// 				hi2c,
-// 				deviceI2CAddress << 1,
-// 				startAddress,
-// 				I2C_MEMADD_SIZE_8BIT,
-// 				readData,
-// 				amountOfRegistersToRead * I2C_MEMADD_SIZE_8BIT,
-// 				10
-// 			);
+	status = HAL_I2C_Mem_Write(
+		hi2c_ptr,
+		device_I2C_addr << 1,
+		ICM20948_USER_BANK_ALL_REG_BANK_SEL_REG,
+		I2C_MEMADD_SIZE_8BIT,
+		&write_data,
+		I2C_MEMADD_SIZE_8BIT,
+		10
+	);
 
-// 	return status;
-// }
+	return status;
+}
 
-// void ICM20948_readGyroscope_Z(I2C_HandleTypeDef* hi2c, uint8_t selectI2cAddress, uint8_t selectGyroSensitivity, float* gyroZ) {
-// 	uint8_t readData[2];
+HAL_StatusTypeDef ICM20948_WriteByte(
+	I2C_HandleTypeDef* hi2c_ptr, 
+	uint8_t const sel_I2c_addr, 
+	uint8_t const reg_addr, 
+	uint8_t write_data) {
+	HAL_StatusTypeDef status = HAL_OK;
+	uint8_t device_I2C_addr = 
+		(sel_I2c_addr == 0) ? 
+		ICM20948_I2C_SLAVE_ADDR_1 : 
+		ICM20948_I2C_SLAVE_ADDR_1;
 
-// //	_ICM20948_SelectUserBank(hi2c, selectI2cAddress, USER_BANK_0);
-// 	_ICM20948_BrustRead(hi2c, selectI2cAddress, ICM20948__USER_BANK_0__GYRO_ZOUT_H__REGISTER, 2, readData);
+	status = HAL_I2C_Mem_Write(
+		hi2c_ptr,
+		device_I2C_addr << 1,
+		reg_addr,
+		I2C_MEMADD_SIZE_8BIT,
+		&write_data,
+		I2C_MEMADD_SIZE_8BIT,
+		10
+	);
 
-// 	int16_t reading = readData[0]<<8 | readData[1];
-// 	*gyroZ = (float) -reading;
-// 	switch (selectGyroSensitivity) {
-// 		case GYRO_FULL_SCALE_250DPS:
-// 			*gyroZ /= GRYO_SENSITIVITY_SCALE_FACTOR_250DPS;
-// 			break;
-// 		case GYRO_FULL_SCALE_500DPS:
-// 			*gyroZ /= GRYO_SENSITIVITY_SCALE_FACTOR_500DPS;
-// 			break;
-// 		case GYRO_FULL_SCALE_1000DPS:
-// 			*gyroZ /= GRYO_SENSITIVITY_SCALE_FACTOR_1000DPS;
-// 			break;
-// 		case GYRO_FULL_SCALE_2000DPS:
-// 			*gyroZ /= GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS;
-// 			break;
-// 	}
-// }
+	return status;
+}
 
-// void ICM20948_readAccelerometer_all(I2C_HandleTypeDef * hi2c, uint8_t selectI2cAddress, uint8_t selectAccelSensitivity, float readings[3]) {
-// 	uint8_t readData[6];
+void ICM20948_init(
+	I2C_HandleTypeDef* hi2c_ptr,
+	uint8_t sel_I2C_addr,
+	uint8_t sel_gyro_sen,
+	uint8_t sel_accel_sen) {
+	HAL_StatusTypeDef status = HAL_OK;
+	status = ICM20948_SelectUserBank(hi2c_ptr, sel_I2C_addr, USER_BANK_0);
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_0_PWR_MGMT_1_REG,
+		ICM20948_RESET
+	);
 
-// //	_ICM20948_SelectUserBank(hi2c, selectI2cAddress, USER_BANK_0);
-// 	_ICM20948_BrustRead(hi2c, selectI2cAddress, ICM20948__USER_BANK_0__ACCEL_XOUT_H__REGISTER, 6, readData);
+	HAL_Delay(200);
+
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_0_PWR_MGMT_1_REG,
+		ICM20948_AUTO_SELECT_CLOCK
+	);
+
+	// Enable both the gyroscope and accelerometer
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_0_PWR_MGMT_2_REG,
+		ICM20948_DISABLE_SENSORS
+	); // For some reason this needs to be tested
+
+	status = ICM20948_SelectUserBank(hi2c_ptr, sel_I2C_addr, USER_BANK_2);
+
+	// Gyroscope sampling rate settings
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_2_GYRO_CONFIG_1_REG,
+		(0 << GYRO_DLPFCFG_BIT) | 
+		(sel_gyro_sen << GYRO_FS_SEL_BIT) | 
+		(EN_GYRO_DLPF << GYRO_FCHOICE_BIT)
+	);
+
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_2_GYRO_SMPLRT_DIV_REG,
+		4
+	);
+
+	// Accelerometer sampling rate settings
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_2_ACCEL_CONFIG_REG,
+		(1 << ACCEL_DLPFCFG_BIT) |
+		(sel_accel_sen << ACCEL_FS_SEL_BIT) |
+		(0x01 << ACCEL_FCHOICE_BIT)
+	);
+
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_2_ACCEL_SMPLRT_DIV_2_REG,
+		4
+	);
+
+	status = ICM20948_SelectUserBank(hi2c_ptr, sel_I2C_addr, USER_BANK_0);
+
+	status = ICM20948_WriteByte(
+		hi2c_ptr,
+		sel_I2C_addr,
+		ICM20948_USER_BANK_0_INT_PIN_CFG_REG,
+		0x02
+	); // Don't understand how this works
+
+	status = _AK09916_WriteByte(
+		hi2c_ptr,
+		AK09916_CNTL2_REG,
+		0x08
+	);
+}
+
+void ICM20948_readGyroscope_Z(
+	I2C_HandleTypeDef* hi2c, 
+	uint8_t sel_I2C_addr, 
+	uint8_t sel_gyro_sen, 
+	float* gyroZ) {
+	uint8_t read_data[2];
+
+	// ICM20948_SelectUserBank(hi2c, sel_I2C_addr, USER_BANK_0);
+	ICM20948_BrustRead(hi2c, sel_I2C_addr, ICM20948_USER_BANK_0_GYRO_ZOUT_H_REG, 2, read_data);
+
+	int16_t reading = (read_data[0] << 8) | read_data[1];
+	*gyroZ = (float) -reading;
+	switch (sel_gyro_sen) {
+	case GYRO_FULL_SCALE_250DPS:
+		*gyroZ /= GYRO_SEN_SCALE_FACTOR_250DPS;
+		break;
+	case GYRO_FULL_SCALE_500DPS:
+		*gyroZ /= GYRO_SEN_SCALE_FACTOR_500DPS;
+		break;
+	case GYRO_FULL_SCALE_1000DPS:
+		*gyroZ /= GYRO_SEN_SCALE_FACTOR_1000DPS;
+		break;
+	case GYRO_FULL_SCALE_2000DPS:
+		*gyroZ /= GYRO_SEN_SCALE_FACTOR_2000DPS;
+		break;
+	}
+}
+
+void ICM20948_readAccelerometer_all(
+	I2C_HandleTypeDef* hi2c, 
+	uint8_t sel_I2C_addr, 
+	uint8_t sel_accel_sen, 
+	float readings[3]) {
+	uint8_t read_data[6];
+
+	// ICM20948_SelectUserBank(hi2c, sel_I2C_addr, USER_BANK_0);
+	ICM20948_BrustRead(hi2c, sel_I2C_addr, ICM20948_USER_BANK_0_ACCEL_XOUT_H_REG, 6, read_data);
+
+	int16_t rD_int[3];
+	rD_int[X] = (read_data[X_HIGH_BYTE] << 8) | read_data[X_LOW_BYTE];
+	rD_int[Y] = (read_data[Y_HIGH_BYTE] << 8) | read_data[Y_LOW_BYTE];
+	rD_int[Z] = (read_data[Z_HIGH_BYTE] << 8) | read_data[Z_LOW_BYTE];
+
+	float rD[3];
+	rD[X] = (float) rD_int[X];
+	rD[Y] = (float) rD_int[Y];
+	rD[Z] = (float) rD_int[Z];
+
+	switch (sel_accel_sen) {
+	case ACCEL_FULL_SCALE_2G:
+		readings[X] = rD[X] / ACCEL_SEN_SCALE_FACTOR_2G;
+		readings[Y] = rD[Y] / ACCEL_SEN_SCALE_FACTOR_2G;
+		readings[Z] = rD[Z] / ACCEL_SEN_SCALE_FACTOR_2G;
+		break;
+	case ACCEL_FULL_SCALE_4G:
+		readings[X] = rD[X] / ACCEL_SEN_SCALE_FACTOR_4G;
+		readings[Y] = rD[Y] / ACCEL_SEN_SCALE_FACTOR_4G;
+		readings[Z] = rD[Z] / ACCEL_SEN_SCALE_FACTOR_4G;
+		break;
+	case ACCEL_FULL_SCALE_8G:
+		readings[X] = rD[X] / ACCEL_SEN_SCALE_FACTOR_8G;
+		readings[Y] = rD[Y] / ACCEL_SEN_SCALE_FACTOR_8G;
+		readings[Z] = rD[Z] / ACCEL_SEN_SCALE_FACTOR_8G;
+		break;
+	case ACCEL_FULL_SCALE_16G:
+		readings[X] = rD[X] / ACCEL_SEN_SCALE_FACTOR_16G;
+		readings[Y] = rD[Y] / ACCEL_SEN_SCALE_FACTOR_16G;
+		readings[Z] = rD[Z] / ACCEL_SEN_SCALE_FACTOR_16G;
+		break;
+	}
+}
 
 
-// 	int16_t rD_int[3];
-// 	rD_int[X] = readData[X_HIGH_BYTE]<<8|readData[X_LOW_BYTE];
-// 	rD_int[Y] = readData[Y_HIGH_BYTE]<<8|readData[Y_LOW_BYTE];
-// 	rD_int[Z] = readData[Z_HIGH_BYTE]<<8|readData[Z_LOW_BYTE];
-
-// 	float rD[3];
-// 	rD[X] = (float) rD_int[X];
-// 	rD[Y] = (float) rD_int[Y];
-// 	rD[Z] = (float) rD_int[Z];
-
-// 	switch (selectAccelSensitivity) {
-// 		case ACCEL_FULL_SCALE_2G:
-// 			readings[X] = rD[X] / ACCEL_SENSITIVITY_SCALE_FACTOR_2G;
-// 			readings[Y] = rD[Y] / ACCEL_SENSITIVITY_SCALE_FACTOR_2G;
-// 			readings[Z] = rD[Z] / ACCEL_SENSITIVITY_SCALE_FACTOR_2G;
-// 			break;
-// 		case ACCEL_FULL_SCALE_4G:
-// 			readings[X] = rD[X] / ACCEL_SENSITIVITY_SCALE_FACTOR_4G;
-// 			readings[Y] = rD[Y] / ACCEL_SENSITIVITY_SCALE_FACTOR_4G;
-// 			readings[Z] = rD[Z] / ACCEL_SENSITIVITY_SCALE_FACTOR_4G;
-// 			break;
-// 		case ACCEL_FULL_SCALE_8G:
-// 			readings[X] = rD[X] / ACCEL_SENSITIVITY_SCALE_FACTOR_8G;
-// 			readings[Y] = rD[Y] / ACCEL_SENSITIVITY_SCALE_FACTOR_8G;
-// 			readings[Z] = rD[Z] / ACCEL_SENSITIVITY_SCALE_FACTOR_8G;
-// 			break;
-// 		case ACCEL_FULL_SCALE_16G:
-// 			readings[X] = rD[X] / ACCEL_SENSITIVITY_SCALE_FACTOR_16G;
-// 			readings[Y] = rD[Y] / ACCEL_SENSITIVITY_SCALE_FACTOR_16G;
-// 			readings[Z] = rD[Z] / ACCEL_SENSITIVITY_SCALE_FACTOR_16G;
-// 			break;
-// 	}
-// }
-
-
-/*---------- KALMAN FILTER ----------*/
+/*------------ KALMAN FILTER ------------*/
 void kalman_init(kalman_t* kalman, float init_est, float est, float mea) {
 	kalman->last_est = init_est;
 	kalman->est = est;
@@ -202,7 +311,7 @@ void kalman_update(kalman_t* kalman, float est, float mea) {
 }
 
 
-/*---------- PID ----------*/
+/*----------------- PID -----------------*/
 void pid_reset(pid_t* pid)  {
 	pid->error_accumulate = 0;
 	pid->error_old = 0;

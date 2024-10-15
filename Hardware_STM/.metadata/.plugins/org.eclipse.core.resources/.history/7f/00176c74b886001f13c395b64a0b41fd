@@ -1,0 +1,26 @@
+/*
+ * test.h
+ *
+ *  Created on: Oct 7, 2024
+ *      Author: AD
+ */
+
+#ifndef INC_TEST_H_
+#define INC_TEST_H_
+
+#include "main.h"
+#include "oled.h"
+#include "helper.h"
+#include "motor.h"
+#include "servo.h"
+
+
+void ultrasonic_task(TIM_HandleTypeDef* htim_1, TIM_HandleTypeDef* htim_6, uint32_t tc1, uint32_t tc2 = 0, uint32_t echo);
+void task_A1();
+void task_A3();
+void task_A4_left();
+void task_A4_right();
+void abhinav_task();
+
+
+#endif /* INC_TEST_H_ */

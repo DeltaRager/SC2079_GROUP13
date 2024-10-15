@@ -1,0 +1,12 @@
+../Core/Src/test.c:11:6:backward_task	1
+../Core/Src/test.c:16:6:task_A1	2
+../Core/Src/test.c:28:6:task_A3	1
+../Core/Src/test.c:37:6:task_A4_left	2
+../Core/Src/test.c:47:6:task_A4_right	2
+../Core/Src/test.c:57:6:abhinav_task	2
+../Core/Src/test.c:75:6:moving_task	5
+../Core/Src/test.c:115:6:ultrasonic_task	1
+../Core/Src/test.c:136:6:accelerometer_task	1
+../Core/Src/test.c:140:6:gyroscope_task	1
+../Core/Src/test.c:144:6:Tx_Rx_task	3
+../Core/Src/test.c:162:6:send_ack_task	1

@@ -1,3 +1,3 @@
 ../Core/Src/servo.c:15:6:servo_init	1
 ../Core/Src/servo.c:20:6:servo_set_val	1
-../Core/Src/servo.c:24:6:servo_set_direction	2
+../Core/Src/servo.c:25:6:servo_set_direction	2

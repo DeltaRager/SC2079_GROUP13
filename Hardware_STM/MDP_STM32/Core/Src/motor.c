@@ -30,8 +30,12 @@ void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleType
 	HAL_TIM_PWM_Start(pwm, R_CHANNEL);
 }
 
-void move(int8_t dir) {
-	// 0: stop, 1: forward, -1: backward
+void move_straight(int8_t dir) {
+	/*
+	0:	stop
+	1:	forward
+	-1:	backward
+	*/
 	if (dir == 0) {
 		HAL_GPIO_WritePin(MOTOR_A_IN1_GPIO_Port, MOTOR_A_IN1_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(MOTOR_A_IN2_GPIO_Port, MOTOR_A_IN2_Pin, GPIO_PIN_RESET);
@@ -102,20 +106,20 @@ void motor_get_drive(int8_t dir, uint8_t speed) {
 	reset_encoders();
 
 	// Move
-	move(dir);
+	move_straight(dir);
 	set_pwm_LR();
 }
 
 
 /*---------- Movement ----------*/
 void motor_stop() {
-	move(0);
+	move_straight(0);
 }
 
 void motor_forward_inf() {
 	servo_set_val(STRAIGHT);
 	HAL_Delay(500);
-	move(-1);
+	move_straight(-1);
 	HAL_Delay(500);
 }
 
@@ -127,41 +131,42 @@ void motor_forward(uint32_t distance) {
 
     uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
 
-	uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
+	// uint8_t buf[100];
+	// sprintf(buf, "target_pulse: %u", target_pulses);
 
-	OLED_Clear();
-	OLED_ShowString(0, 15, buf);
-	OLED_Refresh_Gram();
+	// OLED_Clear();
+	// OLED_ShowString(0, 15, buf);
+	// OLED_Refresh_Gram();
 
-	HAL_Delay(2000);
+	// HAL_Delay(2000);
     
     // Reset encoder count
     reset_encoders();
     uint32_t encoder_cnt = 65535;
 
     // Move forward
-	move(1);
+	move_straight(1);
 
-	OLED_Clear();
-	OLED_ShowString(0, 0, "encoder_cnt: ");
-	OLED_Refresh_Gram();
+	// OLED_Clear();
+	// OLED_ShowString(0, 0, "encoder_cnt: ");
+	// OLED_Refresh_Gram();
 
     while (65535 - encoder_cnt < target_pulses) {
-        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-        sprintf(buf, "%u", encoder_cnt);
-        OLED_ShowString(0, 30, buf);
-		OLED_Refresh_Gram();
+		encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+		// sprintf(buf, "%u", encoder_cnt);
+		// OLED_ShowString(0, 30, buf);
+		// OLED_Refresh_Gram();
     }
     
     // Stop the motors when the target distance is reached
-    move(0);
+    move_straight(0);
+    //HAL_Delay(1000);
 }
 
 void motor_backward_inf() {
 	servo_set_val(STRAIGHT);
 	HAL_Delay(500);
-	move(-1);
+	move_straight(-1);
 	HAL_Delay(500);
 }
 
@@ -173,95 +178,39 @@ void motor_backward(uint32_t distance) {
 
     uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
 
-	uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
+	// uint8_t buf[100];
+	// sprintf(buf, "target_pulse: %u", target_pulses);
 
-	OLED_Clear();
-	OLED_ShowString(0, 0, buf);
-	OLED_Refresh_Gram();
+	// OLED_Clear();
+	// OLED_ShowString(0, 15, buf);
+	// OLED_Refresh_Gram();
 
-	HAL_Delay(2000);
+	// HAL_Delay(2000);
 
     // Reset encoder count
     reset_encoders();
     uint32_t encoder_cnt = 65535;
 
-    // Move backward
-	move(-1);
+    // Move forward
+	move_straight(-1);
 
 	OLED_Clear();
 	OLED_ShowString(0, 0, "encoder_cnt: ");
 	OLED_Refresh_Gram();
 
     while (65535 - encoder_cnt < target_pulses) {
-        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-        sprintf(buf, "%u", encoder_cnt);
-        OLED_ShowString(0, 30, buf);
-		OLED_Refresh_Gram();
+		encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+		// sprintf(buf, "%u", encoder_cnt);
+		// OLED_ShowString(0, 30, buf);
+		// OLED_Refresh_Gram();
     }
-
+    
     // Stop the motors when the target distance is reached
-    move(0);
+    //move_straight(0);
+    HAL_Delay(1000);
 }
 
-void motor_forward_right() {
-	// Servo direction: 1 -> RIGHT
-	servo_set_direction(1);
-	move(1);
-}
-
-void motor_forward_left() {
-	// Servo direction: -1 -> LEFT
-	servo_set_direction(-1);
-	move(1);
-}
-
-void motor_backward_right() {
-	// Servo direction: RIGHT
-	servo_set_direction(1);
-	move(-1);
-}
-
-void motor_backward_left() {
-	// Servo direction: LEFT
-	servo_set_direction(-1);
-	move(-1);
-}
-
-void turn_left(uint16_t deg) {
-	HAL_Delay(500);
-	servo_set_val(LEFT);
-	HAL_Delay(500);
-
-	uint8_t buf[100];
-	uint32_t left_circumference = 8575;
-
-    // Reset encoder count
-    reset_encoders();
-    uint32_t encoder_cnt = 65535;
-
-    // Length
-    float arc_length = (1.0 * deg / 360) * left_circumference;
-
-    // Move forward
-	move(1);
-
-	OLED_Clear();
-	OLED_ShowString(0, 0, "encoder_cnt: ");
-	OLED_Refresh_Gram();
-
-    while (65535.0 - 1.0 * encoder_cnt < arc_length) {
-        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-        sprintf(buf, "%u", encoder_cnt);
-        OLED_ShowString(0, 30, buf);
-		OLED_Refresh_Gram();
-    }
-
-    // Stop the motors when the target distance is reached
-    move(0);
-}
-
-void turn_right(uint16_t deg) {
+void motor_forward_right(uint16_t deg) {
 	HAL_Delay(500);
 	servo_set_val(RIGHT);
 	HAL_Delay(500);
@@ -277,19 +226,66 @@ void turn_right(uint16_t deg) {
 	float arc_length = (1.0 * deg / 360) * right_circumference;
 
 	// Move forward
-	move(1);
+	move_straight(1);
+
+	// OLED_Clear();
+	// OLED_ShowString(0, 0, "encoder_cnt: ");
+	// OLED_Refresh_Gram();
+
+	while (65535 - encoder_cnt < arc_length) {
+		encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+		// sprintf(buf, "%u", encoder_cnt);
+		// OLED_ShowString(0, 30, buf);
+		// OLED_Refresh_Gram();
+	}
+
+	// Stop the motors when the target distance is reached
+	//move_straight(0);
+	HAL_Delay(500);
+}
+
+void motor_forward_left(uint16_t deg) {
+	HAL_Delay(500);
+	servo_set_val(LEFT);
+	HAL_Delay(500);
+
+	uint8_t buf[100];
+	uint32_t left_circumference = 8575;
+
+    // Reset encoder count
+    reset_encoders();
+    uint32_t encoder_cnt = 65535;
+
+    // Length
+    float arc_length = (1.0 * deg / 360) * left_circumference;
+
+    // Move forward
+	move_straight(1);
 
 	OLED_Clear();
 	OLED_ShowString(0, 0, "encoder_cnt: ");
 	OLED_Refresh_Gram();
 
-	while (65535 - encoder_cnt < arc_length) {
-		encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-		sprintf(buf, "%u", encoder_cnt);
-		OLED_ShowString(0, 30, buf);
+    while (65535.0 - 1.0 * encoder_cnt < arc_length) {
+        encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+        sprintf(buf, "%u", encoder_cnt);
+        OLED_ShowString(0, 30, buf);
 		OLED_Refresh_Gram();
-	}
+    }
 
-	// Stop the motors when the target distance is reached
-	move(0);
+    // Stop the motors when the target distance is reached
+    //move_straight(0);
+    HAL_Delay(500);
+}
+
+void motor_backward_right() {
+	// Servo direction: RIGHT
+	servo_set_val(RIGHT);
+	move_straight(-1);
+}
+
+void motor_backward_left() {
+	// Servo direction: LEFT
+	servo_set_val(LEFT);
+	move_straight(-1);
 }

@@ -1,0 +1,93 @@
+/*
+ * test.c
+ *
+ *  Created on: Oct 10, 2024
+ *      Author: AD
+ */
+
+#include "test.h"
+
+// Test Ultrasonic
+void task() {
+	//Set TRIG to low for awhile
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);
+	HAL_Delay(50);
+
+	//Output 1us of Trigger
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_SET);
+	delay_us(10);
+	HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);
+	HAL_Delay(50);
+
+	// Wait for rising edge
+	HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_4);
+	HAL_TIM_IC_CaptureCallback(&htim1);
+
+	sprintf(buffer, "echo: %d", echo);
+	OLED_Clear();
+	OLED_ShowString(0, 0, buffer);
+	OLED_Refresh_Gram();
+}
+
+void task_A1() {
+	// Task A1
+	if (buffer[0] == 'a') {
+		servo_set_val(LEFT);
+		HAL_Delay(2000);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Left");
+		OLED_Refresh_Gram();
+		turn_left(90);
+	}
+}
+
+void task_A3() {
+	// Task A3
+	uint32_t dist = 100;
+	servo_set_val(STRAIGHT);
+	motor_set_speed(20);
+	HAL_Delay(1000);
+	motor_forward(dist);
+}
+
+void task_A4_left() {
+	  // Task A4 LEFT
+	  uint16_t angle = 360;
+	  servo_set_val(LEFT);
+	  motor_set_speed(20);
+
+	  for (int i = 0; i < angle / 90; angle -= 90)
+		  turn_left(90);
+}
+
+void task_A4_right() {
+	  // Task A4 RIGHT
+	   uint16_t angle = 360;
+	   servo_set_val(RIGHT);
+	   motor_set_speed(20);
+
+	   for (int i = 0; i < angle / 90; angle -= 90)
+	 	  turn_right(90);
+}
+
+void abhinav_task() {
+	// Abhinav's Task: left - right - right - backward - repeat
+	for (int i = 0; i < 3; i++) {
+		turn_right(90);
+		HAL_Delay(1000);
+		servo_set_val(STRAIGHT);
+		HAL_Delay(1000);
+
+		turn_left(90);
+		turn_left(90);
+		HAL_Delay(2000);
+		motor_backward_inf();
+		HAL_Delay(3000);
+		motor_stop();
+		HAL_Delay(2000);
+	}
+}
+
+
+
+

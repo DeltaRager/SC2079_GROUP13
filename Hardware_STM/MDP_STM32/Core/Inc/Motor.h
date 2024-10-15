@@ -34,7 +34,7 @@
 
 
 void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleTypeDef* r_enc);
-void move(int8_t dir);
+void move_straight(int8_t dir);
 void set_pwm_LR();
 int16_t get_speed_pwm(uint8_t speed);
 void motor_set_speed(uint8_t speed);
@@ -46,11 +46,9 @@ void motor_forward_inf();
 void motor_forward(uint32_t distance);
 void motor_backward_inf();
 void motor_backward(uint32_t distance);
-void motor_forward_right();
-void motor_forward_left();
+void motor_forward_right(uint16_t deg);
+void motor_forward_left(uint16_t deg);
 void motor_backward_right();
 void motor_backward_left();
-void turn_left(uint16_t deg);
-void turn_right(uint16_t deg);
 
 #endif /* INC_MOTOR_H_ */
