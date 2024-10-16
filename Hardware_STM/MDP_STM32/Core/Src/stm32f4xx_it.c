@@ -51,7 +51,11 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern int16_t l_position, r_position;
+int16_t l_oldpos = 0, r_oldpos = 0;
+extern int l_speed, r_speed;
+extern int no_of_tick;
+int tick = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -184,7 +188,17 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+	  tick++;
+		if (tick == no_of_tick)	{ // assuming 1 msec tick, calculate speed every 50 msec?
+	//		speed = ((position - oldpos)*20*60/180);  // number of ticks/sec * 60 sec  diveide by 180 ticks per round
+			l_speed = (l_position - l_oldpos); // change in position
+			l_oldpos = l_position;
 
+	    r_speed = (r_position - r_oldpos); // change in position
+			r_oldpos = r_position;
+			tick = 0;
+			//HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_10); // LED
+		}
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */

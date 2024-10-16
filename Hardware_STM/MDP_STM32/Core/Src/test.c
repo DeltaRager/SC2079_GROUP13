@@ -178,3 +178,10 @@ void send_ack_task() {
 	uint8_t ack[] = "l";
 	HAL_UART_Transmit(&huart3, ack, sizeof(ack), 2000);
 }
+
+void pulse_task() {
+//	int32_t
+//	while (1) {
+//
+// }
+}

@@ -10,6 +10,3 @@
 ../Core/Src/helper.c:259:6:ICM20948_readAccelerometer_all	5
 ../Core/Src/helper.c:305:6:kalman_init	1
 ../Core/Src/helper.c:311:6:kalman_update	1
-../Core/Src/helper.c:321:6:pid_reset	1
-../Core/Src/helper.c:326:6:pid_init	1
-../Core/Src/helper.c:334:7:pid_adjust	1

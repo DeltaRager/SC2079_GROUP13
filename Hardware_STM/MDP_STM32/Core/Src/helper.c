@@ -318,23 +318,23 @@ void kalman_update(kalman_t* kalman, float est, float mea) {
 
 
 /*----------------- PID -----------------*/
-void pid_reset(pid_t* pid)  {
-	pid->error_accumulate = 0;
-	pid->error_old = 0;
-}
-
-void pid_init(pid_t* pid, float Kp, float Ki, float Kd) {
-	pid_reset(pid);
-
-	pid->Kp = Kp;
-	pid->Ki = Ki;
-	pid->Kd = Kd;
-}
-
-float pid_adjust(pid_t* pid, float error, float scale) {
-	pid->error_accumulate += error;
-	float error_rate = (error - pid->error_old);
-	pid->error_old = error;
-
-	return scale * (pid->Kp*error + pid->Ki*pid->error_accumulate + pid->Kd*error_rate);
-}
+//void pid_reset(pid_t* pid)  {
+//	pid->error_accumulate = 0;
+//	pid->error_old = 0;
+//}
+//
+//void pid_init(pid_t* pid, float Kp, float Ki, float Kd) {
+//	pid_reset(pid);
+//
+//	pid->Kp = Kp;
+//	pid->Ki = Ki;
+//	pid->Kd = Kd;
+//}
+//
+//float pid_adjust(pid_t* pid, float error, float scale) {
+//	pid->error_accumulate += error;
+//	float error_rate = (error - pid->error_old);
+//	pid->error_old = error;
+//
+//	return scale * (pid->Kp*error + pid->Ki*pid->error_accumulate + pid->Kd*error_rate);
+//}

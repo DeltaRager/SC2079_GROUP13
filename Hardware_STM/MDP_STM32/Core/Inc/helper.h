@@ -114,13 +114,13 @@ typedef struct kalman_typedef {
 	float mea;
 } kalman_t;
 
-typedef struct pid_typedef {
-	float error_old;
-	float error_accumulate;
-	float Kp;	// Proportional
-	float Ki;	// Integral
-	float Kd;	// Derivative
-} pid_t;
+//typedef struct pid_typedef {
+//	float error_old;
+//	float error_accumulate;
+//	float Kp;	// Proportional
+//	float Ki;	// Integral
+//	float Kd;	// Derivative
+//} pid_t;
 
 
 /*---------- OLED INTERACTION ----------*/
@@ -171,9 +171,9 @@ void kalman_update(kalman_t* kalman, float est, float mea);
 
 
 /*----------------- PID -----------------*/
-void pid_reset(pid_t* pid);
-void pid_init(pid_t* pid, float Kp, float Ki, float Kd);
-float pid_adjust(pid_t* pid, float error, float scale);
+//void pid_reset(pid_t* pid);
+//void pid_init(pid_t* pid, float Kp, float Ki, float Kd);
+//float pid_adjust(pid_t* pid, float error, float scale);
 
 
 #endif /* INC_HELPER_H_ */

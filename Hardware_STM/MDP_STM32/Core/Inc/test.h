@@ -26,7 +26,7 @@ extern uint8_t cmd_cnt;
 extern uint8_t cmd_buffer[1000];
 extern int head, curr;
 extern uint8_t receive[1];
-
+extern TIM_HandleTypeDef *motor_pwm_tim, *l_enc_tim, *r_enc_tim;
 
 // Checklist
 void task_A1();
@@ -48,5 +48,6 @@ void accelerometer_task();
 void gyroscope_task();
 void UART3_task();
 void send_ack_task();
+void pulse_task();
 
 #endif /* INC_TEST_H_ */

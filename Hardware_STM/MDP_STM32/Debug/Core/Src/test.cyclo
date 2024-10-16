@@ -15,3 +15,4 @@
 ../Core/Src/test.c:161:6:gyroscope_task	1
 ../Core/Src/test.c:165:6:UART3_task	2
 ../Core/Src/test.c:177:6:send_ack_task	1
+../Core/Src/test.c:182:6:pulse_task	1

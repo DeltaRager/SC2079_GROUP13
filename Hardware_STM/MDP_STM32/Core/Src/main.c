@@ -205,6 +205,8 @@ int main(void)
   OLED_ShowString(0, 0, "Press USER btn");
   OLED_ShowString(0, 15, "to continue");
   OLED_Refresh_Gram();
+  servo_set_dir(LEFT);
+  HAL_Delay(500);
   servo_set_dir(STRAIGHT);
 
   while (!is_USER_button_pressed());
@@ -222,8 +224,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    UART3_task();
-
+    forward(80);
+    HAL_Delay(500);
     //forward_left();
 	//forward_left();
   }

@@ -10,6 +10,7 @@
 #ifndef INC_MOTOR_H_
 #define INC_MOTOR_H_
 
+#include <math.h>
 #include "main.h"
 #include "oled.h"
 #include "servo.h"
@@ -33,6 +34,8 @@
 #define R_CHANNEL TIM_CHANNEL_2
 
 
+int16_t PID_Control_left();
+int16_t PID_Control_right();
 void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleTypeDef* r_enc);
 void motor_forward();
 void motor_backward();
