@@ -8,8 +8,8 @@
 ../Core/Src/motor.c:73:6:set_pwm_LR	5
 ../Core/Src/motor.c:95:6:stop	1
 ../Core/Src/motor.c:101:6:forward	2
-../Core/Src/motor.c:137:6:backward	2
-../Core/Src/motor.c:177:6:forward_right	2
-../Core/Src/motor.c:214:6:forward_left	2
-../Core/Src/motor.c:249:6:backward_right	1
-../Core/Src/motor.c:255:6:backward_left	1
+../Core/Src/motor.c:132:6:backward	2
+../Core/Src/motor.c:163:6:forward_right	2
+../Core/Src/motor.c:194:6:forward_left	2
+../Core/Src/motor.c:225:6:backward_right	2
+../Core/Src/motor.c:256:6:backward_left	2

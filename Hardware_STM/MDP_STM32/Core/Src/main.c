@@ -67,10 +67,10 @@ bool is_first_captured = false;
 sensor_t sensor;
 
 // Count the number of commands
-cmd_t* head = NULL;
-cmd_t* curr = NULL;
+uint8_t cmd_buffer[1000] = {0};
 uint8_t cmd_cnt = 0;
 uint8_t receive[1];
+int head = -1, curr = -1;
 uint8_t current_cmd = 0;
 /* USER CODE END PV */
 
@@ -144,23 +144,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim_ptr) {
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
-  cmd_t* new_cmd = (cmd_t*) malloc(sizeof(cmd_t));
-  new_cmd->dir = receive[0];
-  new_cmd->next = NULL;
-  current_cmd = receive[0];
-
-  OLED_ShowString(0, 15, receive[0]);
-  OLED_Refresh_Gram();
-
-  if (cmd_cnt == 0) {
-    head = new_cmd;
-    curr = new_cmd;
-  } else if (cmd_cnt > 0) {
-    curr->next = new_cmd;
-    curr = new_cmd;
-  }
-
+  curr++;
+  cmd_buffer[curr] = receive[0];
   cmd_cnt++;
+  // print_OLED(0, 15, "head:", false, 0);
+  // print_OLED(50, 15, "%c", true, head->dir);
 
   HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
 }
@@ -235,6 +223,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     UART3_task();
+
+    //forward_left();
 	//forward_left();
   }
   /* USER CODE END 3 */

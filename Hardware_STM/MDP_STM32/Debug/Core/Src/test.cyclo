@@ -13,5 +13,5 @@
 ../Core/Src/test.c:136:6:ultrasonic_task	1
 ../Core/Src/test.c:157:6:accelerometer_task	1
 ../Core/Src/test.c:161:6:gyroscope_task	1
-../Core/Src/test.c:165:6:UART3_task	3
-../Core/Src/test.c:186:6:send_ack_task	1
+../Core/Src/test.c:165:6:UART3_task	2
+../Core/Src/test.c:177:6:send_ack_task	1

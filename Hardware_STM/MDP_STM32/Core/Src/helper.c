@@ -39,11 +39,11 @@ void move(uint8_t cmd) {
 	switch ((uint8_t) cmd) {
 	case 'w':
 		print_OLED(0, 30, "Forward", false, 0);
-		forward(80);
+		forward(40);
 		break;
 	case 's':
 		print_OLED(0, 30, "Backward", false, 0);
-		backward(80);
+		backward(40);
 		break;
 	case 'a':
 		print_OLED(0, 30, "Forward left", false, 0);

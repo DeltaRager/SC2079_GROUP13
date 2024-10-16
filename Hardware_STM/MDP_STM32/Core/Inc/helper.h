@@ -122,11 +122,6 @@ typedef struct pid_typedef {
 	float Kd;	// Derivative
 } pid_t;
 
-typedef struct command_typedef {
-	uint8_t dir;
-	struct command_typedef* next;
-} cmd_t;
-
 
 /*---------- OLED INTERACTION ----------*/
 bool is_USER_button_pressed();

@@ -23,8 +23,8 @@ extern float dist;
 extern UART_HandleTypeDef huart3;
 extern sensor_t sensor;
 extern uint8_t cmd_cnt;
-extern cmd_t* head;
-extern cmd_t* curr;
+extern uint8_t cmd_buffer[1000];
+extern int head, curr;
 extern uint8_t receive[1];
 
 

@@ -164,22 +164,13 @@ void gyroscope_task() {
 
 void UART3_task() {
 	print_OLED(0, 0, "cmd_cnt: %u", true, cmd_cnt);
-	HAL_Delay(1000);
+	HAL_Delay(100);
 
-	if (cmd_cnt == 1) {
-		move(receive[0]);
-		head = NULL;
-		free(curr);
-		curr = NULL;
-		cmd_cnt--;
+	if (cmd_cnt > 0) {
+		head++;
+		move(cmd_buffer[head]);
 		send_ack(&huart3);
-	} else if (cmd_cnt > 1) {
-		move(receive[0]);
-		cmd_t* temp = head;
-		head = head->next;
-		free(temp);
 		cmd_cnt--;
-		send_ack(&huart3);
 	}
 }
 	
