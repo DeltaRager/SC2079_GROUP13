@@ -22,7 +22,6 @@
 #define RIGHT		7500	// 25 degree
 
 void servo_init(TIM_HandleTypeDef* pwm);
-void servo_set_val(uint32_t val);
-void servo_set_direction(uint8_t dir);
+void servo_set_dir(uint32_t val);
 
 #endif /* INC_SERVO_H_ */

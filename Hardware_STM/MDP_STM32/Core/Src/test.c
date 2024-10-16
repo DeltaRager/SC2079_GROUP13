@@ -8,10 +8,29 @@
 #include "test.h"
 
 
-void backward_task() {
-	motor_backward(100);
+void forward_task() {
+	forward(80);
 }
 
+void backward_task() {
+	backward(80);
+}
+
+void forward_right_task() {
+	forward_right();
+}
+
+void forward_left_task() {
+	forward_left();
+}
+
+void backward_right_task() {
+	backward_right();
+}
+
+void backward_left_task() {
+	backward_left();
+}
 
 void task_A1(uint8_t* buffer) {
 	// Task A1
@@ -142,6 +161,12 @@ void gyroscope_task() {
 }
 
 void Tx_Rx_task() {
+	sprintf(buffer, "cmd_cnt: %u", cmd_cnt);
+	OLED_Clear();
+	OLED_ShowString(0, 0, buffer);
+	OLED_Refresh_Gram();
+	HAL_Delay(1000);
+
 	if (cmd_cnt == 1) {
 		move(receive);
 		head = NULL;

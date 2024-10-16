@@ -71,6 +71,7 @@ cmd_t* head = NULL;
 cmd_t* curr = NULL;
 uint8_t cmd_cnt = 0;
 uint8_t receive[1];
+uint8_t current_cmd = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -146,9 +147,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
   cmd_t* new_cmd = (cmd_t*) malloc(sizeof(cmd_t));
   new_cmd->dir = receive;
   new_cmd->next = NULL;
-
+  current_cmd = receive[0];
   OLED_Clear();
-  OLED_ShowString(0, 0, receive);
+  OLED_ShowString(0, 0, receive[0]);
   OLED_Refresh_Gram();
 
   if (cmd_cnt == 0) {
@@ -238,7 +239,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	//moving_task();
-	Tx_Rx_task();
+	//Tx_Rx_task();
+    forward(80);
+    backward(80);
+    backward(80);
+//	  motor_forward_left(90);
+//	  move_straight(-1);
 	//send_ack_task();
 	//HAL_Delay(3000);
     //backward_task();

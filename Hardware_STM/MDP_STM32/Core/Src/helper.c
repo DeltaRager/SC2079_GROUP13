@@ -30,37 +30,73 @@ void send_ack(UART_HandleTypeDef* uart_ptr) {
 }
 
 void move(uint8_t cmd) {
-	switch (cmd) {
-	case 'w':
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Forward");
-		OLED_Refresh_Gram();
-		motor_forward(30);
-		break;
-	case 's':
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Backward");
-		OLED_Refresh_Gram();
-		motor_backward(30);
-		break;
-	case 'a':
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Turn left");
-		OLED_Refresh_Gram();
-		motor_forward_left();
-		break;
-	case 'd':
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Turn right");
-		OLED_Refresh_Gram();
-		motor_forward_right();
-		break;
-	case 'x':
-		OLED_Clear();
-		OLED_ShowString(0, 0, "Stop");
-		OLED_Refresh_Gram();
-		move_straight(0);
-		break;
+
+//	if (cmd == 'w') {
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Forward");
+//		OLED_Refresh_Gram();
+//		motor_forward(80);
+//		break;
+//	} else if (cmd == 'a') {
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Turn Left");
+//		OLED_Refresh_Gram();
+//		motor_forward_left();
+//		break;
+//	} else if (cmd == 'd') {
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Turn Right");
+//		OLED_Refresh_Gram();
+//		motor_forward_right();
+//		break;
+//	} else if (cmd == 's') {
+//		OLED_Clear();
+//		OLED_ShowString(0, 0, "Backward");
+//		OLED_Refresh_Gram();
+//		motor_backward(80);
+//		break;
+//	}{
+////		OLED_Clear();
+////		OLED_ShowString(0, 0, cmd);
+////		OLED_Refresh_Gram();
+//	}
+	while (1){
+		switch ((uint8_t) cmd) {
+			case 'w':
+				OLED_Clear();
+				OLED_ShowString(0, 0, "Forward");
+				OLED_Refresh_Gram();
+				motor_forward(30);
+				break;
+			case 's':
+				OLED_Clear();
+				OLED_ShowString(0, 0, "Backward");
+				OLED_Refresh_Gram();
+				motor_backward(30);
+				break;
+			case 'a':
+				OLED_Clear();
+				OLED_ShowString(0, 0, "Turn left");
+				OLED_Refresh_Gram();
+				motor_forward_left(90);
+				break;
+			case 'd':
+				OLED_Clear();
+				OLED_ShowString(0, 0, "Turn right");
+				OLED_Refresh_Gram();
+				motor_forward_right(90);
+				break;
+			case 'x':
+				OLED_Clear();
+				OLED_ShowString(0, 0, "Stop");
+				OLED_Refresh_Gram();
+				motor_stop();
+				break;
+			default:
+				OLED_Clear();
+				OLED_ShowString(0, 0, (uint8_t) cmd);
+				OLED_Refresh_Gram();
+		}
 	}
 }
 

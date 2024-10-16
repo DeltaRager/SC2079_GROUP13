@@ -34,21 +34,21 @@
 
 
 void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleTypeDef* r_enc);
-void move_straight(int8_t dir);
-void set_pwm_LR();
+void motor_forward();
+void motor_backward();
+void motor_stop();
 int16_t get_speed_pwm(uint8_t speed);
 void motor_set_speed(uint8_t speed);
 void reset_encoders();
+void set_pwm_LR();
 void motor_get_drive(int8_t dir, uint8_t speed);
 
-void motor_stop();
-void motor_forward_inf();
-void motor_forward(uint32_t distance);
-void motor_backward_inf();
-void motor_backward(uint32_t distance);
-void motor_forward_right(uint16_t deg);
-void motor_forward_left(uint16_t deg);
-void motor_backward_right();
-void motor_backward_left();
+void stop();
+void forward(uint32_t distance);
+void backward(uint32_t distance);
+void forward_right();
+void forward_left();
+void backward_right();
+void backward_left();
 
 #endif /* INC_MOTOR_H_ */
