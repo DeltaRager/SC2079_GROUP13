@@ -72,6 +72,9 @@ uint8_t cmd_cnt = 0;
 uint8_t receive[1];
 int head = -1, curr = -1;
 uint8_t current_cmd = 0;
+
+//
+uint32_t l_encoder_cnt = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -153,6 +156,22 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
   HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
 }
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    // Check if the interrupt is from the specific timer (e.g., TIM2)
+    if (htim->Instance == TIM2) {
+    	if (__HAL_TIM_IS_TIM_COUNTING_DOWN(htim)) {
+			// Timer is counting down, indicating an underflow
+    		l_encoder_cnt--;
+		} else {
+			// Timer is counting up, indicating an overflow
+			l_encoder_cnt++;
+		}
+        // Your code to handle the timer interrupt
+        // For example: Toggle an LED or update a variable
+//        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);  // Toggle an LED
+
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -201,9 +220,10 @@ int main(void)
 
   // Delay loop for generating a 10us pulse (TIM6)
   HAL_TIM_Base_Start(&htim6);
+
   // USER button
 //  HAL_TIM_Base_Start_IT(&htim2);
-
+  HAL_TIM_Encoder_Start_IT(&htim2, TIM_CHANNEL_ALL);
   OLED_ShowString(0, 0, "Press USER btn");
   OLED_ShowString(0, 15, "to continue");
   OLED_Refresh_Gram();
@@ -428,7 +448,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM2_Init 2 */
-
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END TIM2_Init 2 */
 
 }

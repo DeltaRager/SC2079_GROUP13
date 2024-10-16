@@ -152,7 +152,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
 
   HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
 }
-
 /* USER CODE END 0 */
 
 /**
@@ -201,9 +200,8 @@ int main(void)
 
   // Delay loop for generating a 10us pulse (TIM6)
   HAL_TIM_Base_Start(&htim6);
-  // USER button
-//  HAL_TIM_Base_Start_IT(&htim2);
 
+  // USER button
   OLED_ShowString(0, 0, "Press USER btn");
   OLED_ShowString(0, 15, "to continue");
   OLED_Refresh_Gram();

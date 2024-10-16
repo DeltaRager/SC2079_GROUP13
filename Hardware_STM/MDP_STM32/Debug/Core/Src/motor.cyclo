@@ -11,8 +11,8 @@
 ../Core/Src/motor.c:203:6:motor_get_drive	2
 ../Core/Src/motor.c:225:6:stop	1
 ../Core/Src/motor.c:229:6:forward	10
-../Core/Src/motor.c:343:6:backward	3
-../Core/Src/motor.c:389:6:forward_right	3
-../Core/Src/motor.c:430:6:forward_left	3
-../Core/Src/motor.c:469:6:backward_right	1
-../Core/Src/motor.c:475:6:backward_left	1
+../Core/Src/motor.c:346:6:backward	3
+../Core/Src/motor.c:392:6:forward_right	3
+../Core/Src/motor.c:433:6:forward_left	3
+../Core/Src/motor.c:472:6:backward_right	1
+../Core/Src/motor.c:478:6:backward_left	1

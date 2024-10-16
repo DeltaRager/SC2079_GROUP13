@@ -134,7 +134,7 @@ void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleType
 	start = 0;
 
 	Kp = 8;       // 10
-	Ki = 0.004;   // 0.001
+	Ki = 0.0004;   // 0.001
 	Kd = 1000;
 	millisOld = HAL_GetTick();
 }
@@ -331,8 +331,6 @@ void forward(uint32_t distance) {
 
 		print_OLED(0, 15, "l: %ld", true, l_angle);
 		print_OLED(0, 30, "r: %ld", true, r_angle);
-
-		HAL_Delay(15);
 
         // sprintf(buf, "%u", l_encoder_cnt);
         // OLED_ShowString(0, 30, buf);

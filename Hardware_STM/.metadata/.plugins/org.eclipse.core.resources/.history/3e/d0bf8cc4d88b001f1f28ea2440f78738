@@ -134,7 +134,7 @@ void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleType
 	start = 0;
 
 	Kp = 8;       // 10
-	Ki = 0.004;   // 0.001
+	Ki = 0.0004;   // 0.001
 	Kd = 1000;
 	millisOld = HAL_GetTick();
 }
@@ -269,8 +269,7 @@ void forward(uint32_t distance) {
 
     // Reset encoder count
     reset_encoders();
-    	// Initialize to 65535 after resetting the encoder
-    uint32_t l_encoder_cnt = 0;
+    uint32_t l_encoder_cnt = 0;	// Initialize to 65535 after resetting the encoder
 	uint32_t r_encoder_cnt = 0;
     // Move forward
     motor_forward();
@@ -293,9 +292,9 @@ void forward(uint32_t distance) {
 		l_position = l_count/4;  //x1 Encoding
 		l_angle = l_count/2;
 
-
-		l_pwm_val = PID_Control_left();
 		r_pwm_val = PID_Control_right();
+		l_pwm_val = PID_Control_left();
+
 
 
 		__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
@@ -329,10 +328,8 @@ void forward(uint32_t distance) {
 			start = 0;
 		}
 
-		print_OLED(0, 15, "l: %ld", true, l_angle);
-		print_OLED(0, 30, "r: %ld", true, r_angle);
-
-		HAL_Delay(15);
+//		print_OLED(0, 15, "l: %ld", true, l_angle);
+//		print_OLED(0, 30, "r: %ld", true, r_angle);
 
         // sprintf(buf, "%u", l_encoder_cnt);
         // OLED_ShowString(0, 30, buf);

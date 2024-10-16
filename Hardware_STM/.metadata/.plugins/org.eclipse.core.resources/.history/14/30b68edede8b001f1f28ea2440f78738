@@ -134,7 +134,7 @@ void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleType
 	start = 0;
 
 	Kp = 8;       // 10
-	Ki = 0.004;   // 0.001
+	Ki = 0.04;   // 0.001
 	Kd = 1000;
 	millisOld = HAL_GetTick();
 }
