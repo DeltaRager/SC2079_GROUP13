@@ -27,18 +27,26 @@ extern cmd_t* head;
 extern cmd_t* curr;
 extern uint8_t receive[1];
 
-// Tasks
-void backward_task();
+
+// Checklist
 void task_A1();
 void task_A3();
 void task_A4_left();
 void task_A4_right();
 void abhinav_task();
 void moving_task();
+
+// Functionality
+void forward_task();
+void backward_task();
+void forward_right_task();
+void forward_left_task();
+void backward_right_task();
+void backward_left_task();
 void ultrasonic_task();
 void accelerometer_task();
 void gyroscope_task();
-void Tx_Rx_task();
+void UART3_task();
 void send_ack_task();
 
 #endif /* INC_TEST_H_ */

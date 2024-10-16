@@ -8,30 +8,7 @@
 #include "test.h"
 
 
-void forward_task() {
-	forward(80);
-}
-
-void backward_task() {
-	backward(80);
-}
-
-void forward_right_task() {
-	forward_right();
-}
-
-void forward_left_task() {
-	forward_left();
-}
-
-void backward_right_task() {
-	backward_right();
-}
-
-void backward_left_task() {
-	backward_left();
-}
-
+// Checklist
 void task_A1(uint8_t* buffer) {
 	// Task A1
 	if (buffer[0] == 'a') {
@@ -131,6 +108,31 @@ void moving_task() {
 	}
 }
 
+// Functionality
+void forward_task() {
+	forward(80);
+}
+
+void backward_task() {
+	backward(80);
+}
+
+void forward_right_task() {
+	forward_right();
+}
+
+void forward_left_task() {
+	forward_left();
+}
+
+void backward_right_task() {
+	backward_right();
+}
+
+void backward_left_task() {
+	backward_left();
+}
+
 void ultrasonic_task() {
     HCSR04_Init();
     HAL_Delay(200);
@@ -160,22 +162,19 @@ void gyroscope_task() {
 	print_value(0, 0, "gyro: %f", sensor.gyroZ);
 }
 
-void Tx_Rx_task() {
-	sprintf(buffer, "cmd_cnt: %u", cmd_cnt);
-	OLED_Clear();
-	OLED_ShowString(0, 0, buffer);
-	OLED_Refresh_Gram();
+void UART3_task() {
+	print_OLED(0, 0, "cmd_cnt: %u", true, cmd_cnt);
 	HAL_Delay(1000);
 
 	if (cmd_cnt == 1) {
-		move(receive);
+		move(receive[0]);
 		head = NULL;
 		free(curr);
 		curr = NULL;
 		cmd_cnt--;
 		send_ack(&huart3);
 	} else if (cmd_cnt > 1) {
-		move(receive);
+		move(receive[0]);
 		cmd_t* temp = head;
 		head = head->next;
 		free(temp);

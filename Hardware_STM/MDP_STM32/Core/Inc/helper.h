@@ -130,7 +130,7 @@ typedef struct command_typedef {
 
 /*---------- OLED INTERACTION ----------*/
 bool is_USER_button_pressed();
-void print_value(int x, int y, uint8_t* msg, int32_t val);
+void print_OLED(int x, int y, uint8_t* msg, bool var_exist, int32_t val);
 
 
 /*-------------- COMMANDS --------------*/

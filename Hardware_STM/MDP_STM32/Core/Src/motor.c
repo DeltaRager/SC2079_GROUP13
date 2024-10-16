@@ -90,98 +90,58 @@ void set_pwm_LR() {
 	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
 }
 
-// Speed: 0 - 100
-void motor_get_drive(int8_t dir, uint8_t speed) {
-	// Stop
-	if (dir == 0) {
-		motor_stop();
-		return;
-	}
-
-	// Derive PWM value
-	pwm_val_target = get_speed_pwm(speed);
-	l_pwm_val = pwm_val_target;
-	r_pwm_val = pwm_val_target;
-
-	// Reset encoders
-	reset_encoders();
-
-	// Move
-	move_straight(dir);
-	set_pwm_LR();
-}
-
 
 /*---------- Movement ----------*/
 void stop() {
 	motor_stop();
+	servo_set_dir(STRAIGHT);
+	HAL_Delay(200);
 }
 
 void forward(uint32_t distance) {
-	static bool has_run = false;  // Flag to check if the function has already run
-	if (has_run) return;  // Exit if the function has already been executed once
-	has_run = true;  // Set the flag to true to prevent future runs
-
 	float wheel_radius = 3.4;							// Wheel radius (cm)
     float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
-    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 (30x reducer) = 330
+    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 = 330 (30x reducer)
     float pulses_per_cm = pulses_per_rev / circumference;
     uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
     
-    servo_set_val(STRAIGHT);
+    servo_set_dir(STRAIGHT);
     HAL_Delay(500);
-	uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
-	OLED_Clear();
-	OLED_ShowString(0, 15, buf);
-	OLED_Refresh_Gram();
-	HAL_Delay(500);
+    OLED_Clear();
+    print_OLED(0, 0, "target_pulse: %u", true, target_pulses);
     
-    // Reset encoder count
+    // Reset the encoder and initialize encoder count to 65535 after resetting
     reset_encoders();
-    uint32_t encoder_cnt = 65535;	// Initialize to 65535 after resetting the encoder
+    uint32_t encoder_cnt = 65535; 
 
     // Move forward
     motor_forward();
-	OLED_Clear();
-	OLED_ShowString(0, 0, "encoder_cnt: ");
-	OLED_Refresh_Gram();
+    print_OLED(0, 15, "encoder_cnt: ", false, 0);
     while (65535 - encoder_cnt < target_pulses) {
         encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-        sprintf(buf, "%u", encoder_cnt);
-        OLED_ShowString(0, 30, buf);
-		OLED_Refresh_Gram();
+    	print_OLED(40, 15, "%u", true, encoder_cnt);
     }
     
     // Stop the motors when the target distance is reached
     motor_stop();
+    HAL_Delay(300);
 }
 
 void backward(uint32_t distance) {
-	static bool has_run = false;  // Flag to check if the function has already run
-    if (has_run) return;  // Exit if the function has already been executed once
-	has_run = true;  // Set the flag to true to prevent future runs
-
-    float wheel_radius = 3.4;  // Wheel radius (cm)
-    float circumference = 2 * 3.14159 * wheel_radius;  // Calculate circumference
-    uint32_t pulses_per_rev = 1550;  // Encoder's specification
+    float wheel_radius = 3.4;  							// Wheel radius (cm)
+    float circumference = 2 * 3.14159 * wheel_radius;  	// Calculate circumference
+    uint32_t pulses_per_rev = 1550;  					// Encoder's specification
     float pulses_per_cm = pulses_per_rev / circumference;
     uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
     
-    servo_set_val(STRAIGHT);
+    servo_set_dir(STRAIGHT);
     HAL_Delay(500);
-    
-    // Display target pulses
-    uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
     OLED_Clear();
-    OLED_ShowString(0, 0, buf);
-    OLED_Refresh_Gram();
-    HAL_Delay(1000);  // Delay to allow user to see target pulse
-
-    // Reset encoder count
+    print_OLED(0, 0, "target_pulse: %u", true, target_pulses);
+    
+    // Reset the encoder and initialize encoder count to 0 after resetting
     reset_encoders();
-    uint32_t encoder_cnt = 0;	// Initialize to 0 after resetting the encoder
+    uint32_t encoder_cnt = 0;
 
     // Move backward
     motor_backward();
@@ -192,24 +152,20 @@ void backward(uint32_t distance) {
     // Monitor encoder count until the target distance is reached
     while (encoder_cnt < target_pulses) {
         encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-        sprintf(buf, "%u", encoder_cnt);
-        OLED_ShowString(0, 30, buf);
-        OLED_Refresh_Gram();
+//        sprintf(buf, "%u", encoder_cnt);
+//        OLED_ShowString(0, 30, buf);
+//        OLED_Refresh_Gram();
     }
 
     // Stop the motors when the target distance is reached
-    motor_stop();
+    HAL_Delay(300);
 }
 
 void forward_right() {
-    static bool has_run = false;  // Flag to check if the function has already run
-    if (has_run) return;  // Exit if the function has already been executed once
-    has_run = true;  // Set the flag to true to prevent future runs
-
     HAL_Delay(200);  // Reduced delay before moving
 
     // Set servo position for right turn
-    servo_set_val(RIGHT);
+    servo_set_dir(RIGHT);
     HAL_Delay(200);  // Reduced delay after setting servo
 
     uint8_t buf[100];
@@ -226,30 +182,27 @@ void forward_right() {
     motor_forward();
 
     // Display initialization for encoder count monitoring
-    OLED_Clear();
-    OLED_ShowString(0, 0, "encoder_cnt: ");
-    OLED_Refresh_Gram();
+//    OLED_Clear();
+//    OLED_ShowString(0, 0, "encoder_cnt: ");
+//    OLED_Refresh_Gram();
 
     // Loop until the desired arc length is reached
     while (65535 - encoder_cnt < arc_length) {
         encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);  // Update encoder count
-        sprintf(buf, "%u", encoder_cnt);  // Format encoder count for display
-        OLED_ShowString(0, 30, buf);  // Display current encoder count
-        OLED_Refresh_Gram();  // Refresh OLED display
+//        sprintf(buf, "%u", encoder_cnt);  // Format encoder count for display
+//        OLED_ShowString(0, 30, buf);  // Display current encoder count
+//        OLED_Refresh_Gram();  // Refresh OLED display
     }
 
     // Stop the motors when the target distance is reached
-    motor_stop();  // Stop moving
+    HAL_Delay(300);
 }
 
 void forward_left() {
-	static bool has_run = false;  // Flag to check if the function has already run
-	if (has_run) return;  // Exit if the function has already been executed once
-	has_run = true;  // Set the flag to true to prevent future runs
 	HAL_Delay(200);  // Reduced delay before moving
 
-	    // Set servo position for right turn
-	servo_set_val(LEFT);
+	// Set servo position for right turn
+	servo_set_dir(LEFT);
 	HAL_Delay(200);  // Reduced delay after setting servo
 
 	uint8_t buf[100];
@@ -269,26 +222,25 @@ void forward_left() {
 	OLED_ShowString(0, 0, "encoder_cnt: ");
 	OLED_Refresh_Gram();
 
-    while (65535-encoder_cnt < arc_length) {
+    while (65535 - encoder_cnt < arc_length) {
     	encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);  // Update encoder count
-    	sprintf(buf, "%u", encoder_cnt);  // Format encoder count for display
-    	OLED_ShowString(0, 30, buf);  // Display current encoder count
-    	OLED_Refresh_Gram();  // Refresh OLED display
+//    	sprintf(buf, "%u", encoder_cnt);  // Format encoder count for display
+//    	OLED_ShowString(0, 30, buf);  // Display current encoder count
+//    	OLED_Refresh_Gram();  // Refresh OLED display
     }
 
     // Stop the motors when the target distance is reached
-    motor_stop();
-    //HAL_Delay(500);
+    HAL_Delay(300);
 }
 
 void backward_right() {
 	// Servo direction: RIGHT
-	servo_set_val(RIGHT);
+	servo_set_dir(RIGHT);
 	motor_backward();
 }
 
 void backward_left() {
 	// Servo direction: LEFT
-	servo_set_val(LEFT);
+	servo_set_dir(LEFT);
 	motor_backward();
 }

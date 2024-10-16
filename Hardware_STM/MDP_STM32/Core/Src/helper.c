@@ -15,9 +15,15 @@ bool is_USER_button_pressed() {
 	return HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET;
 }
 
-void print_value(int x, int y, uint8_t* msg, int32_t val) {
+void print_OLED(int x, int y, uint8_t* msg, bool var_exist, int32_t val) {
 	uint8_t* buf[100];
-	sprintf(buf, msg, val);
+
+	if (var_exist) {
+		sprintf(buf, msg, val);
+	} else {
+		sprintf(buf, msg);
+	}
+
 	OLED_ShowString(x, y, buf);
 	OLED_Refresh_Gram();
 }
@@ -30,73 +36,37 @@ void send_ack(UART_HandleTypeDef* uart_ptr) {
 }
 
 void move(uint8_t cmd) {
-
-//	if (cmd == 'w') {
-//		OLED_Clear();
-//		OLED_ShowString(0, 0, "Forward");
-//		OLED_Refresh_Gram();
-//		motor_forward(80);
-//		break;
-//	} else if (cmd == 'a') {
-//		OLED_Clear();
-//		OLED_ShowString(0, 0, "Turn Left");
-//		OLED_Refresh_Gram();
-//		motor_forward_left();
-//		break;
-//	} else if (cmd == 'd') {
-//		OLED_Clear();
-//		OLED_ShowString(0, 0, "Turn Right");
-//		OLED_Refresh_Gram();
-//		motor_forward_right();
-//		break;
-//	} else if (cmd == 's') {
-//		OLED_Clear();
-//		OLED_ShowString(0, 0, "Backward");
-//		OLED_Refresh_Gram();
-//		motor_backward(80);
-//		break;
-//	}{
-////		OLED_Clear();
-////		OLED_ShowString(0, 0, cmd);
-////		OLED_Refresh_Gram();
-//	}
-	while (1){
-		switch ((uint8_t) cmd) {
-			case 'w':
-				OLED_Clear();
-				OLED_ShowString(0, 0, "Forward");
-				OLED_Refresh_Gram();
-				motor_forward(30);
-				break;
-			case 's':
-				OLED_Clear();
-				OLED_ShowString(0, 0, "Backward");
-				OLED_Refresh_Gram();
-				motor_backward(30);
-				break;
-			case 'a':
-				OLED_Clear();
-				OLED_ShowString(0, 0, "Turn left");
-				OLED_Refresh_Gram();
-				motor_forward_left(90);
-				break;
-			case 'd':
-				OLED_Clear();
-				OLED_ShowString(0, 0, "Turn right");
-				OLED_Refresh_Gram();
-				motor_forward_right(90);
-				break;
-			case 'x':
-				OLED_Clear();
-				OLED_ShowString(0, 0, "Stop");
-				OLED_Refresh_Gram();
-				motor_stop();
-				break;
-			default:
-				OLED_Clear();
-				OLED_ShowString(0, 0, (uint8_t) cmd);
-				OLED_Refresh_Gram();
-		}
+	switch ((uint8_t) cmd) {
+	case 'w':
+		print_OLED(0, 30, "Forward", false, 0);
+		forward(80);
+		break;
+	case 's':
+		print_OLED(0, 30, "Backward", false, 0);
+		backward(80);
+		break;
+	case 'a':
+		print_OLED(0, 30, "Forward left", false, 0);
+		forward_left();
+		break;
+	case 'd':
+		print_OLED(0, 30, "Forward right", false, 0);
+		forward_right();
+		break;
+	case 'z':
+		print_OLED(0, 30, "Backward left", false, 0);
+		backward_left();
+		break;
+	case 'c':
+		print_OLED(0, 30, "Backward right", false, 0);
+		backward_right();
+		break;
+	case 'x':
+		print_OLED(0, 30, "Stop", false, 0);
+		stop();
+		break;
+	default:
+		print_OLED(0, 30, "cmd wrong type", false, 0);
 	}
 }
 

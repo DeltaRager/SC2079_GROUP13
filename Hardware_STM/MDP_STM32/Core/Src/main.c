@@ -145,11 +145,11 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim_ptr) {
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
   cmd_t* new_cmd = (cmd_t*) malloc(sizeof(cmd_t));
-  new_cmd->dir = receive;
+  new_cmd->dir = receive[0];
   new_cmd->next = NULL;
   current_cmd = receive[0];
-  OLED_Clear();
-  OLED_ShowString(0, 0, receive[0]);
+
+  OLED_ShowString(0, 15, receive[0]);
   OLED_Refresh_Gram();
 
   if (cmd_cnt == 0) {
@@ -217,18 +217,14 @@ int main(void)
   OLED_ShowString(0, 0, "Press USER btn");
   OLED_ShowString(0, 15, "to continue");
   OLED_Refresh_Gram();
-  servo_set_val(STRAIGHT);
+  servo_set_dir(STRAIGHT);
 
   while (!is_USER_button_pressed());
   OLED_Clear();
   motor_set_speed(20);
-  //servo_set_val(LEFT);
 
-  // Start the interrupt
+  // Start the interrupt for UART3
   HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
-//OLED_Clear();
-//OLED_ShowString(0, 0, receive);
-//OLED_Refresh_Gram();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -238,16 +234,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	//moving_task();
-	//Tx_Rx_task();
-    forward(80);
-    backward(80);
-    backward(80);
-//	  motor_forward_left(90);
-//	  move_straight(-1);
-	//send_ack_task();
-	//HAL_Delay(3000);
-    //backward_task();
+    UART3_task();
+	//forward_left();
   }
   /* USER CODE END 3 */
 }
