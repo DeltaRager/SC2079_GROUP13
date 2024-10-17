@@ -15,7 +15,6 @@
 #include "oled.h"
 #include "servo.h"
 #include "helper.h"
-#include "ICM20948.h"
 
 // PWM Parameters
 #define MOTOR_PWM_PERIOD		7200
@@ -36,6 +35,7 @@
 
 int16_t PID_Control_left(uint8_t isback);
 int16_t PID_Control_right(uint8_t isback);
+int16_t PID_Control_turn();
 void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleTypeDef* r_enc, I2C_HandleTypeDef * hi2c);
 void motor_forward();
 void motor_backward();
@@ -47,7 +47,6 @@ void set_pwm_LR();
 void motor_get_drive(int8_t dir, uint8_t speed);
 
 void stop();
-void forward_pid_gyro(uint32_t distance);
 void forward_pid(uint32_t distance);
 void forward(uint32_t distance);
 void backward(uint32_t distance);

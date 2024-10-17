@@ -39,27 +39,27 @@ void move(uint8_t cmd) {
 	switch ((uint8_t) cmd) {
 	case 'w':
 		print_OLED(0, 30, "Forward", false, 0);
-		forward_pid(40);
+		forward_pid(10);
 		break;
 	case 's':
 		print_OLED(0, 30, "Backward", false, 0);
-		backward_pid(40);
+		backward_pid(10);
 		break;
 	case 'a':
 		print_OLED(0, 30, "Forward left", false, 0);
-		forward_left();
+		forward_left_pid();
 		break;
 	case 'd':
 		print_OLED(0, 30, "Forward right", false, 0);
-		forward_right();
+		forward_right_pid();
 		break;
 	case 'z':
 		print_OLED(0, 30, "Backward left", false, 0);
-		backward_left();
+		backward_left_pid();
 		break;
 	case 'c':
 		print_OLED(0, 30, "Backward right", false, 0);
-		backward_right();
+		backward_right_pid();
 		break;
 	case 'x':
 		print_OLED(0, 30, "Stop", false, 0);

@@ -9,6 +9,7 @@
 
 #include "motor.h"
 #include <math.h>
+#include "ICM20948.h"
 
 // Timers for PWM, L and R Encoders
 TIM_HandleTypeDef *motor_pwm_tim, *l_enc_tim, *r_enc_tim;
@@ -23,7 +24,8 @@ int16_t l_speed =0, r_speed = 0;
 int16_t no_of_tick = 50;
 
 int16_t l_rpm = 0, r_rpm = 0;
-int16_t pwmMax = (5000-1000);
+int16_t pwmMax = 1500;
+int16_t pwmMax_back = 2000;
 
 int l_err, r_err;
 int start=0;
@@ -48,6 +50,16 @@ uint8_t readGyroZData[2];
 int16_t gyroZ;
 float angleNow = 0;
 
+// Gyro PID
+int angle_err;
+int16_t target_turn_angle;
+int16_t angle;
+int16_t angle_error;
+int32_t angle_error_area = 0;
+int32_t angle_error_old, angle_error_change;
+float_t angle_error_rate;
+int32_t angle_millisOld, angle_millisNow, angle_dt;
+
 typedef struct _pidConfig {
 	float Kp;
 	float Ki;
@@ -58,12 +70,52 @@ typedef struct _pidConfig {
 
 PIDConfig pidSlow;
 
+int16_t PID_Control_turn(){
+	if (abs(angle_error)>2){ //more than 2 degree difference
+
+			angle = (int16_t) (angleNow);
+			angle_error = target_turn_angle - angle;
+			angle_error = angle_error;
+
+			angle_millisNow = HAL_GetTick();
+			angle_dt = (angle_millisNow - angle_millisOld); // time elapsed in millisecond
+			angle_millisOld = angle_millisNow; // store the current time for next round
+
+			angle_error_area = angle_error_area + abs(angle_error)*angle_dt; // area under error for Ki
+
+			angle_error_change = abs(angle_error) - angle_error_old; // change in error
+			angle_error_old = abs(angle_error); //store the error for next round
+			angle_error_rate = angle_error_change/angle_dt; // for Kd
+
+			l_pwm_val = (int)(abs(angle_error)*Kp + angle_error_area*Ki + angle_error_rate*Kd);  // PID
+			l_pwm_val = l_pwm_val; // Boost for PWM to convert from angle
+	  	  //pwmVal = 2000;   // overwrite PID above, minimum pwmVal = 1000
+
+			if (l_pwm_val > pwmMax)  // Clamp the PWM to its maximum value
+			   l_pwm_val = pwmMax;
+
+			return(l_pwm_val);
+
+		}
+}
+
 int16_t PID_Control_left(uint8_t isback){
 	  //Control Loop Left
 	  if (abs(l_error)>2){ //more than 2 degree difference
 
     	  l_angle = (int)(l_position*360/360);  // supposed to be 260 tick per revolution?
   	      l_error = target_angle - l_angle;
+
+
+  	    if (isback) {
+			Kp = 10;
+			Ki = 0.001;
+			Kd = 800;
+		} else {
+			Kp = 8;
+			Ki = 0.0006;
+			Kd = 800;
+		}
 
   	    if (l_error > 0) {
 			motor_forward();
@@ -85,8 +137,13 @@ int16_t PID_Control_left(uint8_t isback){
 
   	  //pwmVal = 2000;   // overwrite PID above, minimum pwmVal = 1000
 
-		if (l_pwm_val > pwmMax)  // Clamp the PWM to its maximum value
-		   l_pwm_val = pwmMax;
+		if (isback) {
+			if (l_pwm_val > pwmMax_back)  // Clamp the PWM to its maximum value
+				   l_pwm_val = pwmMax_back;
+		} else {
+			if (l_pwm_val > pwmMax)  // Clamp the PWM to its maximum value
+			   l_pwm_val = pwmMax;
+		}
 
 		return(l_pwm_val);
 
@@ -99,6 +156,16 @@ int16_t PID_Control_right(uint8_t isback){
 
 		  r_angle = (int)(r_position*360/360);  // supposed to be 260 tick per revolution?
 		  r_error = target_angle - r_angle;
+
+		  if (isback) {
+				Kp = 10;
+				Ki = 0.001;
+				Kd = 800;
+			} else {
+				Kp = 8;
+				Ki = 0.0006;
+				Kd = 800;
+			}
 
         if (r_error > 0) {
         	motor_forward();
@@ -121,8 +188,13 @@ int16_t PID_Control_right(uint8_t isback){
 
   	  //pwmVal = 2000;   // overwrite PID above, minimum pwmVal = 1000
 
-		if (r_pwm_val > pwmMax)  // Clamp the PWM to its maximum value
-		   r_pwm_val = pwmMax;
+		if (isback) {
+			if (l_pwm_val > pwmMax_back)  // Clamp the PWM to its maximum value
+				   l_pwm_val = pwmMax_back;
+		} else {
+			if (l_pwm_val > pwmMax)  // Clamp the PWM to its maximum value
+			   l_pwm_val = pwmMax;
+		}
 
 		return(r_pwm_val);
 
@@ -153,11 +225,13 @@ void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleType
 
 	start = 0;
 
-	Kp = 4.5;       // 10
-	Ki = 0.0002;   // 0.001
-	Kd = 1100;
+	Kp = 8;       // 10
+	Ki = 0.0004;   // 0.001
+	Kd = 800;
 	l_millisOld = HAL_GetTick();
 	r_millisOld = HAL_GetTick();
+
+	ICM20948_init(hi2c,0,GYRO_FULL_SCALE_2000DPS);
 }
 
 void motor_forward() {
@@ -282,18 +356,10 @@ void forward_pid(uint32_t distance) {
 	r_millisOld = HAL_GetTick();
 	l_millisOld = HAL_GetTick();
 
-	static bool has_run = false;  // Flag to check if the function has already run
-	if (has_run) return;  // Exit if the function has already been executed once
-	has_run = true;  // Set the flag to true to prevent future runs
-
 	float wheel_radius = 3;							// Wheel radius (cm)
     float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
-    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 (30x reducer) = 1550
-    float pulses_per_cm = pulses_per_rev / circumference;
-    uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
 
 	target_angle = (distance * 360) / circumference;
-
 
 	l_rpm = (int)((1000/no_of_tick) * 60/360);
 	r_rpm = (int)((1000/no_of_tick) * 60/360);
@@ -312,13 +378,7 @@ void forward_pid(uint32_t distance) {
 	r_error = target_angle - r_angle;
 
     servo_set_dir(STRAIGHT);
-    HAL_Delay(500);
-	uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
-	OLED_Clear();
-	OLED_ShowString(0, 15, buf);
-	OLED_Refresh_Gram();
-	HAL_Delay(500);
+    HAL_Delay(400);
 
     // Reset encoder count
     reset_encoders();
@@ -337,14 +397,6 @@ void forward_pid(uint32_t distance) {
     	l_encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
     	r_encoder_cnt = __HAL_TIM_GET_COUNTER(r_enc_tim);
 
-    	if (65535 - l_encoder_cnt > 32767) {
-    		l_count = 0;
-    	}
-
-    	if (r_encoder_cnt > 32767) {
-			r_count = 0;
-		}
-
 		r_count = (int16_t)r_encoder_cnt;
 		r_position = r_count/4;  //x1 Encoding
 		r_angle = r_count/2;
@@ -353,15 +405,17 @@ void forward_pid(uint32_t distance) {
 		l_count = (int16_t)l_encoder_cnt; // 1550 - 360deg
 		l_position = l_count/4;  //x1 Encoding
 		l_angle = l_count/2;
-
 
 		l_pwm_val = PID_Control_left(0);
 		r_pwm_val = PID_Control_right(0);
 
+		print_OLED(0, 15, "l: %ld", true, l_angle);
+		print_OLED(0, 30, "r: %ld", true, r_angle);
+
 		__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
 		__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 
-		if (abs(l_error) < 5){ // error is less than 3 deg
+		if (abs(l_error) < 15){ // error is less than 3 deg
 //	      l_err++; // to keep track how long it has reached steady state
 //	      l_angle = (int)(l_position*360/1550);  //calculate the angle
 //	      l_error = target_angle - l_angle; // calculate the error
@@ -369,7 +423,7 @@ void forward_pid(uint32_t distance) {
 	      __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 		}
 
-		if (abs(r_error) < 5){ // error is less than 3 deg
+		if (abs(r_error) < 15){ // error is less than 3 deg
 //	      r_err++; // to keep track how long it has reached steady state
 //	      r_angle = (int)(r_position*360/1550);  //calculate the angle
 //	      r_error = target_angle - r_angle; // calculate the error
@@ -391,8 +445,7 @@ void forward_pid(uint32_t distance) {
 			start = 0;
 		}
 
-		print_OLED(0, 15, "l: %ld", true, l_angle);
-		print_OLED(0, 30, "r: %ld", true, r_angle);
+
 
         // sprintf(buf, "%u", l_encoder_cnt);
         // OLED_ShowString(0, 30, buf);
@@ -402,147 +455,8 @@ void forward_pid(uint32_t distance) {
     // Stop the motors when the target distance is reached
     motor_stop();
     servo_set_dir(STRAIGHT);
-	has_run = false;
 }
 
-void forward_pid_gyro(uint32_t distance) {
-	r_millisOld = HAL_GetTick();
-	l_millisOld = HAL_GetTick();
-
-	static bool has_run = false;  // Flag to check if the function has already run
-	if (has_run) return;  // Exit if the function has already been executed once
-	has_run = true;  // Set the flag to true to prevent future runs
-
-	float wheel_radius = 3;							// Wheel radius (cm)
-    float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
-    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 (30x reducer) = 1550
-    float pulses_per_cm = pulses_per_rev / circumference;
-    uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
-
-	target_angle = (distance * 360) / circumference;
-
-
-	l_rpm = (int)((1000/no_of_tick) * 60/360);
-	r_rpm = (int)((1000/no_of_tick) * 60/360);
-
-	l_speed = 0, r_speed = 0;
-	l_position = 0, r_position = 0;  // see SysTick_Handler in stm32f4xx_it.c
-	l_oldpos = 0, r_oldpos = 0; // see SysTick_Handler in stm32f4xx_it.c
-	l_angle = 0, r_angle = 0;
-	l_pwm_val = 0, r_pwm_val = 0;
-
-	l_err = 0, r_err = 0;// for checking whether error has settle down near to zero
-	l_error_old = 0, r_error_old = 0;
-	l_error_area = 0, r_error_area = 0;
-
-	l_error = target_angle - l_angle;
-	r_error = target_angle - r_angle;
-
-	int8_t dir = 1;
-	int correction = 0;
-
-    servo_set_dir(STRAIGHT);
-    HAL_Delay(500);
-	uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
-	OLED_Clear();
-	OLED_ShowString(0, 15, buf);
-	OLED_Refresh_Gram();
-	HAL_Delay(500);
-
-    // Reset encoder count
-    reset_encoders();
-    	// Initialize to 65535 after resetting the encoder
-    uint32_t l_encoder_cnt = 0;
-	uint32_t r_encoder_cnt = 0;
-    // Move forward
-    motor_forward();
-    OLED_Clear();
-	print_OLED(0, 0, "ta: %ld", true, target_angle);
-
-	start = 1;
-
-    while (start) {
-
-    	l_encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
-    	r_encoder_cnt = __HAL_TIM_GET_COUNTER(r_enc_tim);
-
-    	if (65535 - l_encoder_cnt > 32767) {
-    		l_count = 0;
-    	}
-
-    	if (r_encoder_cnt > 32767) {
-			r_count = 0;
-		}
-
-		r_count = (int16_t)r_encoder_cnt;
-		r_position = r_count/4;  //x1 Encoding
-		r_angle = r_count/2;
-
-		l_encoder_cnt = 65535 - l_encoder_cnt;
-		l_count = (int16_t)l_encoder_cnt; // 1550 - 360deg
-		l_position = l_count/4;  //x1 Encoding
-		l_angle = l_count/2;
-
-
-//		l_pwm_val = PID_Control_left(0);
-//		r_pwm_val = PID_Control_right(0);
-
-		__Gyro_Read_Z(&gyro_i2c, readGyroZData, gyroZ); // polling
-		dir = __HAL_TIM_IS_TIM_COUNTING_DOWN(l_enc_tim) ? 1 : -1;
-		angleNow += ((gyroZ >= -4 && gyroZ <= 11) ? 0 : gyroZ);
-		__PID_SPEED_T(pidSlow, angleNow, correction, dir, l_pwm_val, r_pwm_val);
-
-		__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
-		__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
-
-		if (abs(l_error) < 5){ // error is less than 3 deg
-//	      l_err++; // to keep track how long it has reached steady state
-//	      l_angle = (int)(l_position*360/1550);  //calculate the angle
-//	      l_error = target_angle - l_angle; // calculate the error
-	      l_pwm_val = 0; //stop
-	      __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
-		} else {
-			l_error = target_angle - l_angle; // calculate the error
-		}
-
-		if (abs(r_error) < 5){ // error is less than 3 deg
-//	      r_err++; // to keep track how long it has reached steady state
-//	      r_angle = (int)(r_position*360/1550);  //calculate the angle
-//	      r_error = target_angle - r_angle; // calculate the error
-			r_pwm_val = 0; //stop
-			__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
-		} else {
-			r_error = target_angle - r_angle; // calculate the error
-		}
-
-//		if (l_err > 5) { // error has settled to within the acceptance ranges
-//	   	 	l_pwm_val = 0; //stop
-//   	     	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
-//		}
-//
-//		if (r_err > 5) { // error has settled to within the acceptance ranges
-//	   	 	r_pwm_val = 0; //stop
-//   	     	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
-//		}
-
-		if (r_pwm_val == 0 && l_pwm_val == 0) {
-			start = 0;
-		}
-
-		print_OLED(0, 15, "l: %ld", true, l_angle);
-		print_OLED(0, 30, "r: %ld", true, r_angle);
-
-        // sprintf(buf, "%u", l_encoder_cnt);
-        // OLED_ShowString(0, 30, buf);
-		// OLED_Refresh_Gram();
-    }
-
-    // Stop the motors when the target distance is reached
-    motor_stop();
-    servo_set_dir(STRAIGHT);
-	has_run = false;
-}
 
 void backward(uint32_t distance) {
 	l_millisOld = HAL_GetTick();
@@ -596,15 +510,8 @@ void backward_pid(uint32_t distance) {
 	r_millisOld = HAL_GetTick();
 	l_millisOld = HAL_GetTick();
 
-	static bool has_run = false;  // Flag to check if the function has already run
-	if (has_run) return;  // Exit if the function has already been executed once
-	has_run = true;  // Set the flag to true to prevent future runs
-
 	float wheel_radius = 3;							// Wheel radius (cm)
     float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
-    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 (30x reducer) = 1550
-    float pulses_per_cm = pulses_per_rev / circumference;
-    uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
 
 	target_angle = ((distance * 360) / circumference);
 	target_angle = -target_angle;
@@ -626,14 +533,7 @@ void backward_pid(uint32_t distance) {
 	r_error = target_angle - r_angle;
 
     servo_set_dir(STRAIGHT);
-    HAL_Delay(500);
-	uint8_t buf[100];
-    sprintf(buf, "target_pulse: %u", target_pulses);
-	OLED_Clear();
-	OLED_ShowString(0, 15, buf);
-	OLED_Refresh_Gram();
-	HAL_Delay(500);
-
+    HAL_Delay(400);
     // Reset encoder count
     reset_encoders();
     	// Initialize to 65535 after resetting the encoder
@@ -651,15 +551,6 @@ void backward_pid(uint32_t distance) {
     	l_encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
     	r_encoder_cnt = __HAL_TIM_GET_COUNTER(r_enc_tim);
 
-
-    	if (65535 - l_encoder_cnt > 32767) {
-			l_count = 0;
-		}
-
-		if (r_encoder_cnt > 32767) {
-			r_count = 0;
-		}
-
 		r_count = (int16_t)r_encoder_cnt;
 		r_position = r_count/4;  //x1 Encoding
 		r_angle = r_count/2;
@@ -676,12 +567,12 @@ void backward_pid(uint32_t distance) {
 		__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
 		__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 
-		if (abs(l_error) < 10){ // error is less than 3 deg
+		if (abs(l_error) < 15){ // error is less than 3 deg
 	      l_pwm_val = 0; //stop
 	      __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 		}
 
-		if (abs(r_error) < 10){ // error is less than 3 deg
+		if (abs(r_error) < 15){ // error is less than 3 deg
 			r_pwm_val = 0; //stop
 			__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
 		}
@@ -697,7 +588,6 @@ void backward_pid(uint32_t distance) {
     // Stop the motors when the target distance is reached
     motor_stop();
     servo_set_dir(STRAIGHT);
-	has_run = false;
 }
 
 void forward_right() {
@@ -735,6 +625,69 @@ void forward_right() {
         sprintf(buf, "%u", encoder_cnt);  // Format encoder count for display
         OLED_ShowString(0, 30, buf);  // Display current encoder count
         OLED_Refresh_Gram();  // Refresh OLED display
+    }
+
+    // Stop the motors when the target distance is reached
+    motor_stop();  // Stop moving
+    servo_set_dir(STRAIGHT);
+    has_run = false;
+}
+
+void forward_right_pid() {
+    static bool has_run = false;  // Flag to check if the function has already run
+    if (has_run) return;  // Exit if the function has already been executed once
+    has_run = true;  // Set the flag to true to prevent future runs
+
+    servo_set_dir(RIGHT);
+    HAL_Delay(400);  // Reduced delay after setting servo
+
+    // Move forward
+    reset_encoders();
+    motor_forward();
+    start = 0;
+    int16_t target_turn_angle = -90;
+
+	angle = 0;
+	l_pwm_val = 0, r_pwm_val = 0;
+
+	angle_err = 0;
+	angle_error_old = 0;
+	angle_error_area = 0;
+
+//	angle_error = target_turn_angle - angle;
+
+	angleNow = 0;
+	start = 1;
+
+	l_pwm_val = 1350;
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, l_pwm_val);
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+
+	uint32_t last_curTask_tick = HAL_GetTick();
+
+
+
+    // Loop until the desired arc length is reached
+    while (start) {
+    	__Gyro_Read_Z(gyro_i2c, readGyroZData, gyroZ); // polling
+		angleNow += gyroZ / GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS * 0.2;
+
+		 angle = (int16_t) (angleNow);
+		 angle_error = target_turn_angle - angle;
+
+//		 int delta = (int) (angleNow - target_turn_angle);
+		 print_OLED(0, 0, "Angle: %d", true, angle);
+		 print_OLED(0, 15, "pwm: %ld", true, l_pwm_val);
+//		r_pwm_val = PID_Control_right(0);
+
+		if (abs(angle_error) < 6){ // error is less than 3 deg
+		  l_pwm_val = 0; //stop
+		  r_pwm_val = 0; //stop
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
+		  start = 0;
+		  break;
+		}
     }
 
     // Stop the motors when the target distance is reached
@@ -784,6 +737,65 @@ void forward_left() {
     //HAL_Delay(500);
 }
 
+
+void forward_left_pid() {
+	servo_set_dir(LEFT);
+    HAL_Delay(400);  // Reduced delay after setting servo
+
+    // Move forward
+    reset_encoders();
+    motor_forward();
+    start = 0;
+    int16_t target_turn_angle = 90;
+
+	angle = 0;
+	l_pwm_val = 0, r_pwm_val = 0;
+
+	angle_err = 0;
+	angle_error_old = 0;
+	angle_error_area = 0;
+
+//	angle_error = target_turn_angle - angle;
+
+	angleNow = 0;
+	start = 1;
+
+	l_pwm_val = 1350;
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, l_pwm_val);
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+
+	uint32_t last_curTask_tick = HAL_GetTick();
+
+
+
+    // Loop until the desired arc length is reached
+    while (start) {
+    	__Gyro_Read_Z(gyro_i2c, readGyroZData, gyroZ); // polling
+		angleNow += gyroZ / GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS * 0.2;
+
+		 angle = (int16_t) (angleNow);
+		 angle_error = target_turn_angle - angle;
+
+//		 int delta = (int) (angleNow - target_turn_angle);
+		 print_OLED(0, 0, "Angle: %d", true, angle);
+		 print_OLED(0, 15, "pwm: %ld", true, l_pwm_val);
+//		r_pwm_val = PID_Control_right(0);
+
+		if (abs(angle_error) < 6){ // error is less than 3 deg
+		  l_pwm_val = 0; //stop
+		  r_pwm_val = 0; //stop
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
+		  start = 0;
+		  break;
+		}
+    }
+
+    // Stop the motors when the target distance is reached
+    motor_stop();  // Stop moving
+    servo_set_dir(STRAIGHT);
+}
+
 void backward_move() {
 	servo_set_dir(STRAIGHT);
 	backward(40);
@@ -795,8 +807,120 @@ void backward_right() {
 	backward(80);
 }
 
+void backward_right_pid() {
+    servo_set_dir(RIGHT);
+    HAL_Delay(400);  // Reduced delay after setting servo
+
+    // Move forward
+    reset_encoders();
+    motor_backward();
+    start = 0;
+    int16_t target_turn_angle = 90;
+
+	angle = 0;
+	l_pwm_val = 0, r_pwm_val = 0;
+
+	angle_err = 0;
+	angle_error_old = 0;
+	angle_error_area = 0;
+
+//	angle_error = target_turn_angle - angle;
+
+	angleNow = 0;
+	start = 1;
+
+	l_pwm_val = 1350;
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, l_pwm_val);
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+
+	uint32_t last_curTask_tick = HAL_GetTick();
+
+    // Loop until the desired arc length is reached
+    while (start) {
+    	__Gyro_Read_Z(gyro_i2c, readGyroZData, gyroZ); // polling
+		angleNow += gyroZ / GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS * 0.2;
+
+		 angle = (int16_t) (angleNow);
+		 angle_error = target_turn_angle - angle;
+
+//		 int delta = (int) (angleNow - target_turn_angle);
+		 print_OLED(0, 0, "Angle: %d", true, angle);
+		 print_OLED(0, 15, "pwm: %ld", true, l_pwm_val);
+//		r_pwm_val = PID_Control_right(0);
+
+		if (abs(angle_error) < 6){ // error is less than 3 deg
+		  l_pwm_val = 0; //stop
+		  r_pwm_val = 0; //stop
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
+		  start = 0;
+		  break;
+		}
+    }
+
+    // Stop the motors when the target distance is reached
+    motor_stop();  // Stop moving
+    servo_set_dir(STRAIGHT);
+}
+
 void backward_left() {
 	// Servo direction: LEFT
 	servo_set_dir(LEFT);
 	backward(80);
+}
+
+void backward_left_pid() {
+    servo_set_dir(LEFT);
+    HAL_Delay(400);  // Reduced delay after setting servo
+
+    // Move forward
+    reset_encoders();
+    motor_backward();
+    start = 0;
+    int16_t target_turn_angle = -90;
+
+	angle = 0;
+	l_pwm_val = 0, r_pwm_val = 0;
+
+	angle_err = 0;
+	angle_error_old = 0;
+	angle_error_area = 0;
+
+//	angle_error = target_turn_angle - angle;
+
+	angleNow = 0;
+	start = 1;
+
+	l_pwm_val = 1350;
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, l_pwm_val);
+	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+
+	uint32_t last_curTask_tick = HAL_GetTick();
+
+    // Loop until the desired arc length is reached
+    while (start) {
+    	__Gyro_Read_Z(gyro_i2c, readGyroZData, gyroZ); // polling
+		angleNow += gyroZ / GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS * 0.2;
+
+		 angle = (int16_t) (angleNow);
+		 angle_error = target_turn_angle - angle;
+
+//		 int delta = (int) (angleNow - target_turn_angle);
+		 print_OLED(0, 0, "Angle: %d", true, angle);
+		 print_OLED(0, 15, "pwm: %ld", true, l_pwm_val);
+//		r_pwm_val = PID_Control_right(0);
+
+		if (abs(angle_error) < 6){ // error is less than 3 deg
+		  l_pwm_val = 0; //stop
+		  r_pwm_val = 0; //stop
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+		  __HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
+		  start = 0;
+		  break;
+		}
+    }
+
+    // Stop the motors when the target distance is reached
+    motor_stop();  // Stop moving
+    servo_set_dir(STRAIGHT);
 }

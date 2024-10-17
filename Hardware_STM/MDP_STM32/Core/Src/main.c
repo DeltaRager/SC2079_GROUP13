@@ -26,7 +26,6 @@
 #include "motor.h"
 #include "servo.h"
 #include "test.h"
-#include "ICM20948.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -204,7 +203,7 @@ int main(void)
   OLED_Init();
   motor_init(&htim8, &htim2, &htim3, &hi2c1);
   servo_init(&htim1);
-  ICM20948_init(&hi2c1,1,GYRO_FULL_SCALE_2000DPS);
+
 //  HCSR04_Init();
   // sensors_init(&hi2c1, &htim4, &sensor);
 
@@ -222,11 +221,13 @@ int main(void)
 
   while (!is_USER_button_pressed());
   OLED_Clear();
-  motor_set_speed(50);
+//  motor_set_speed(50);
 
   // Start the interrupt for UART3
-//  HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
-  forward_pid_gyro(50);
+  HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
+//  forward_pid(0);
+//  backward_pid(0);
+//  forward_right_pid();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -245,7 +246,7 @@ int main(void)
 //	  uint8_t buf[15];
 //	  sprintf(buf, "%f\n\r", angleNow);
 //	  HAL_UART_Transmit(&huart3, buf, sizeof(buf), HAL_MAX_DELAY);
-//	  UART3_task();
+	  UART3_task();
 //	  HCSR04_Trigger();
 //	  HAL_Delay(100);
     //forward_left();
