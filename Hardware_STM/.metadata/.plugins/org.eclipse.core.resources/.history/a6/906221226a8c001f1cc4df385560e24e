@@ -26,8 +26,7 @@ extern uint8_t cmd_cnt;
 extern uint8_t cmd_buffer[1000];
 extern int head, curr;
 extern uint8_t receive[1];
-extern uint8_t readGyroZData[2];
-extern int16_t gyroZ;
+
 
 // Checklist
 void task_A1();

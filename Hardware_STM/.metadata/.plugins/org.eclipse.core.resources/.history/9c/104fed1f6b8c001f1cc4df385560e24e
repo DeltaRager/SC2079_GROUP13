@@ -155,7 +155,7 @@ void accelerometer_task() {
 }
 
 void gyroscope_task() {
-	print_OLED(50, 0, "%hd", true, gyroZ);
+	print_OLED(40, 0, "%hd", true, gyroZ);
 }
 
 void UART3_task() {
