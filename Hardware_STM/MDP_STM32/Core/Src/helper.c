@@ -43,7 +43,7 @@ void move(uint8_t cmd) {
 		break;
 	case 's':
 		print_OLED(0, 30, "Backward", false, 0);
-		backward(40);
+		backward_move();
 		break;
 	case 'a':
 		print_OLED(0, 30, "Forward left", false, 0);

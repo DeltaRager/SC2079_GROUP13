@@ -23,7 +23,7 @@ int16_t l_speed =0, r_speed = 0;
 int16_t no_of_tick = 50;
 
 int16_t l_rpm = 0, r_rpm = 0;
-int16_t pwmMax = (4000-1000);
+int16_t pwmMax = (3500-1000);
 
 int l_err, r_err;
 int start=0;
@@ -37,7 +37,8 @@ int16_t l_error, r_error;           // error between target and actual
 int32_t l_error_area = 0, r_error_area = 0;  // area under error - to calculate I for PI implementation
 int32_t l_error_old, l_error_change, r_error_old, r_error_change;
 float_t l_error_rate, r_error_rate; // to calculate D for PID control
-int32_t millisOld, millisNow, dt; // to calculate I and D for PID control
+int32_t l_millisOld, l_millisNow, l_dt;
+int32_t r_millisOld, r_millisNow, r_dt;// to calculate I and D for PID control
 int16_t Kp = 0;
 float_t Kd = 0;
 float_t Ki = 0;
@@ -54,15 +55,15 @@ int16_t PID_Control_left(){
 		else
 			motor_forward(); //reverse direction
 
-        millisNow = HAL_GetTick();
-        dt = (millisNow - millisOld); // time elapsed in millisecond
-        millisOld = millisNow; // store the current time for next round
+        l_millisNow = HAL_GetTick();
+        l_dt = (l_millisNow - l_millisOld); // time elapsed in millisecond
+        l_millisOld = l_millisNow; // store the current time for next round
 
-        l_error_area = l_error_area + l_error*dt; // area under error for Ki
+        l_error_area = l_error_area + l_error*l_dt; // area under error for Ki
 
         l_error_change = l_error - l_error_old; // change in error
   	    l_error_old = l_error; //store the error for next round
-        l_error_rate = l_error_change/dt; // for Kd
+        l_error_rate = l_error_change/l_dt; // for Kd
 
 		l_pwm_val = (int)(l_error*Kp + l_error_area*Ki + l_error_rate*Kd);  // PID
 
@@ -80,23 +81,23 @@ int16_t PID_Control_right(){
 	  //Control Loop Left
 	  if (abs(r_error)>2){ //more than 2 degree difference
 
-    	  r_angle = (int)(r_position*360/1550);  // supposed to be 260 tick per revolution?
-  	      r_error = target_angle - r_angle;
+		  r_angle = (int)(r_position*360/1550);  // supposed to be 260 tick per revolution?
+		  r_error = target_angle - r_angle;
 
         if (r_error > 0)
       	  motor_forward(); //forward
         else
         	motor_forward(); //reverse direction
 
-        millisNow = HAL_GetTick();
-        dt = (millisNow - millisOld); // time elapsed in millisecond
-        millisOld = millisNow; // store the current time for next round
+        r_millisNow = HAL_GetTick();
+        r_dt = (r_millisNow - r_millisOld); // time elapsed in millisecond
+        r_millisOld = r_millisNow; // store the current time for next round
 
-        r_error_area = r_error_area + r_error*dt; // area under error for Ki
+        r_error_area = r_error_area + r_error*r_dt; // area under error for Ki
 
         r_error_change = r_error - r_error_old; // change in error
   	    r_error_old = r_error; //store the error for next round
-        r_error_rate = r_error_change/dt; // for Kd
+        r_error_rate = r_error_change/r_dt; // for Kd
 
 		r_pwm_val = (int)(r_error*Kp + r_error_area*Ki + r_error_rate*Kd);  // PID
 
@@ -133,10 +134,11 @@ void motor_init(TIM_HandleTypeDef* pwm, TIM_HandleTypeDef* l_enc, TIM_HandleType
 
 	start = 0;
 
-	Kp = 8;       // 10
-	Ki = 0.004;   // 0.001
-	Kd = 1000;
-	millisOld = HAL_GetTick();
+	Kp = 5;       // 10
+	Ki = 0.0005;   // 0.001
+	Kd = 1200;
+	l_millisOld = HAL_GetTick();
+	r_millisOld = HAL_GetTick();
 }
 
 void motor_forward() {
@@ -227,7 +229,39 @@ void stop() {
 }
 
 void forward(uint32_t distance) {
-	millisOld = HAL_GetTick();
+	float wheel_radius = 3.4;							// Wheel radius (cm)
+    float circumference = 2 * 3.14159 * wheel_radius;	// Calculate circumference
+    uint32_t pulses_per_rev = 1550;						// Encoder's specification: 11 ppr * 30 = 330 (30x reducer)
+    float pulses_per_cm = (1.0 * pulses_per_rev) / circumference;
+    uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
+    uint32_t encoder_cnt = 65535;
+
+    servo_set_dir(STRAIGHT);
+    HAL_Delay(500);
+
+    OLED_Clear();
+//    print_OLED(0, 0, "target_pulse:", false, 0);
+//    print_OLED(0, 15, "%u", true, target_pulses);
+//    print_OLED(0, 30, "val: ", false, 0);
+
+    // Reset the encoder and initialize encoder count to 65535 after resetting
+    reset_encoders();
+    motor_forward();
+    HAL_Delay(50);
+
+    while (65535 - encoder_cnt < target_pulses) {
+		encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
+//		print_OLED(0, 45, "%u", true, 65535 - encoder_cnt);
+    }
+
+    // Stop the motors when the target distance is reached
+    motor_stop();
+    //HAL_Delay(300);
+}
+
+void forward_pid(uint32_t distance) {
+	r_millisOld = HAL_GetTick();
+	l_millisOld = HAL_GetTick();
 
 	static bool has_run = false;  // Flag to check if the function has already run
 	if (has_run) return;  // Exit if the function has already been executed once
@@ -240,7 +274,6 @@ void forward(uint32_t distance) {
     uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
 
 	target_angle = (distance * 360) / circumference;
-	target_angle = target_angle/2;
 
 	l_rpm = (int)((1000/no_of_tick) * 60/1550);
 	r_rpm = (int)((1000/no_of_tick) * 60/1550);
@@ -284,6 +317,14 @@ void forward(uint32_t distance) {
     	l_encoder_cnt = __HAL_TIM_GET_COUNTER(l_enc_tim);
     	r_encoder_cnt = __HAL_TIM_GET_COUNTER(r_enc_tim);
 
+    	if (65535 - l_encoder_cnt > 32767) {
+    		l_count = 0;
+    	}
+
+    	if (r_encoder_cnt > 32767) {
+			r_count = 0;
+		}
+
 		r_count = (int16_t)r_encoder_cnt;
 		r_position = r_count/4;  //x1 Encoding
 		r_angle = r_count/2;
@@ -297,42 +338,41 @@ void forward(uint32_t distance) {
 		l_pwm_val = PID_Control_left();
 		r_pwm_val = PID_Control_right();
 
-
-		__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 		__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
-
-
+		__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 
 		if (abs(l_error) < 10){ // error is less than 3 deg
-	      l_err++; // to keep track how long it has reached steady state
-	      l_angle = (int)(l_position*360/1550);  //calculate the angle
-	      l_error = target_angle - l_angle; // calculate the error
+//	      l_err++; // to keep track how long it has reached steady state
+//	      l_angle = (int)(l_position*360/1550);  //calculate the angle
+//	      l_error = target_angle - l_angle; // calculate the error
+	      l_pwm_val = 0; //stop
+	      __HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
 		}
 
 		if (abs(r_error) < 10){ // error is less than 3 deg
-	      r_err++; // to keep track how long it has reached steady state
-	      r_angle = (int)(r_position*360/1550);  //calculate the angle
-	      r_error = target_angle - r_angle; // calculate the error
+//	      r_err++; // to keep track how long it has reached steady state
+//	      r_angle = (int)(r_position*360/1550);  //calculate the angle
+//	      r_error = target_angle - r_angle; // calculate the error
+			r_pwm_val = 0; //stop
+			__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
 		}
 
-		if (l_err > 3) { // error has settled to within the acceptance ranges
-	   	 	l_pwm_val = 0; //stop
-   	     	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
-		}
+//		if (l_err > 5) { // error has settled to within the acceptance ranges
+//	   	 	l_pwm_val = 0; //stop
+//   	     	__HAL_TIM_SET_COMPARE(motor_pwm_tim, L_CHANNEL, l_pwm_val);
+//		}
+//
+//		if (r_err > 5) { // error has settled to within the acceptance ranges
+//	   	 	r_pwm_val = 0; //stop
+//   	     	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
+//		}
 
-		if (r_err > 3) { // error has settled to within the acceptance ranges
-	   	 	r_pwm_val = 0; //stop
-   	     	__HAL_TIM_SET_COMPARE(motor_pwm_tim, R_CHANNEL, r_pwm_val);
-		}
-
-		if (r_pwm_val < 1000) {
+		if (r_pwm_val == 0 && l_pwm_val == 0) {
 			start = 0;
 		}
 
 		print_OLED(0, 15, "l: %ld", true, l_angle);
 		print_OLED(0, 30, "r: %ld", true, r_angle);
-
-		HAL_Delay(15);
 
         // sprintf(buf, "%u", l_encoder_cnt);
         // OLED_ShowString(0, 30, buf);
@@ -344,7 +384,8 @@ void forward(uint32_t distance) {
 }
 
 void backward(uint32_t distance) {
-	millisOld = HAL_GetTick();
+	l_millisOld = HAL_GetTick();
+	r_millisOld = HAL_GetTick();
 
 	static bool has_run = false;  // Flag to check if the function has already run
     if (has_run) return;  // Exit if the function has already been executed once
@@ -356,7 +397,6 @@ void backward(uint32_t distance) {
     float pulses_per_cm = pulses_per_rev / circumference;
     uint32_t target_pulses = (uint32_t)(distance * pulses_per_cm);
     
-    servo_set_dir(STRAIGHT);
     HAL_Delay(500);
 
     // Display target pulses
@@ -387,6 +427,8 @@ void backward(uint32_t distance) {
 
     // Stop the motors when the target distance is reached
     motor_stop();
+    servo_set_dir(STRAIGHT);
+    has_run = false;
 }
 
 void forward_right() {
@@ -428,6 +470,8 @@ void forward_right() {
 
     // Stop the motors when the target distance is reached
     motor_stop();  // Stop moving
+    servo_set_dir(STRAIGHT);
+    has_run = false;
 }
 
 void forward_left() {
@@ -466,17 +510,24 @@ void forward_left() {
 
     // Stop the motors when the target distance is reached
     motor_stop();
+    servo_set_dir(STRAIGHT);
+    has_run = false;
     //HAL_Delay(500);
+}
+
+void backward_move() {
+	servo_set_dir(STRAIGHT);
+	backward(40);
 }
 
 void backward_right() {
 	// Servo direction: RIGHT
 	servo_set_dir(RIGHT);
-	motor_backward();
+	backward(80);
 }
 
 void backward_left() {
 	// Servo direction: LEFT
 	servo_set_dir(LEFT);
-	motor_backward();
+	backward(80);
 }

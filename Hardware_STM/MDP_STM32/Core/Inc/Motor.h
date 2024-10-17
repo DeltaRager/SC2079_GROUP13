@@ -47,6 +47,7 @@ void set_pwm_LR();
 void motor_get_drive(int8_t dir, uint8_t speed);
 
 void stop();
+void forward_pid(uint32_t distance);
 void forward(uint32_t distance);
 void backward(uint32_t distance);
 void forward_right();

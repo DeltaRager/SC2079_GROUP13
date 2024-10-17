@@ -117,6 +117,7 @@ void HCSR04_Trigger() {
   HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_SET);     // pull the TRIG pin HIGH
   delay_us(10);                                                        // wait for 10 us
   HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+  HAL_Delay(50);
   __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
 }
 
@@ -134,6 +135,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim_ptr) {
     __HAL_TIM_SET_COUNTER(htim_ptr, 0);                       // reset the counter
 
     echo = (tc2 > tc1) ? (tc2 - tc1) : (64000 - tc1 + tc2);
+    print_OLED(0, 15, "l: %ld", true, echo);
     dist = echo * 0.034/2;
     is_first_captured = false;                                // set it back to false
 
@@ -197,6 +199,7 @@ int main(void)
   OLED_Init();
   motor_init(&htim8, &htim2, &htim3);
   servo_init(&htim1);
+//  HCSR04_Init();
   // sensors_init(&hi2c1, &htim4, &sensor);
 
   // Delay loop for generating a 10us pulse (TIM6)
@@ -213,10 +216,11 @@ int main(void)
 
   while (!is_USER_button_pressed());
   OLED_Clear();
-  motor_set_speed(20);
+  motor_set_speed(50);
 
   // Start the interrupt for UART3
-  HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
+//  HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
+  forward_pid(30);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -226,8 +230,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    forward(80);
-    HAL_Delay(500);
+//	  UART3_task();
+//	  HCSR04_Trigger();
+//	  HAL_Delay(100);
     //forward_left();
 	//forward_left();
   }
@@ -324,6 +329,7 @@ static void MX_TIM1_Init(void)
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
 
   /* USER CODE BEGIN TIM1_Init 1 */
@@ -349,6 +355,10 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_IC_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
@@ -363,6 +373,14 @@ static void MX_TIM1_Init(void)
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_BOTHEDGE;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim1, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
