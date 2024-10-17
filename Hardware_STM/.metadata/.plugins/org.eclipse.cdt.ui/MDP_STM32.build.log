@@ -1,10 +1,60 @@
-15:51:15 **** Incremental Build of configuration Debug for project MDP_STM32 ****
+17:48:13 **** Incremental Build of configuration Debug for project MDP_STM32 ****
 make -j8 all 
-arm-none-eabi-size  MDP_STM32.elf 
-   text	   data	    bss	    dec	    hex	filename
-  36456	    468	   3396	  40320	   9d80	MDP_STM32.elf
-Finished building: default.size.stdout
- 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+In file included from ../Core/Src/main.c:26:
+../Core/Inc/helper.h:51:6: error: conflicting types for 'ICM20948_init'; have 'void(I2C_HandleTypeDef *, uint8_t,  uint8_t,  uint8_t)' {aka 'void(I2C_HandleTypeDef *, unsigned char,  unsigned char,  unsigned char)'}
+   51 | void ICM20948_init(
+      |      ^~~~~~~~~~~~~
+In file included from ../Core/Src/main.c:24:
+../Core/Inc/ICM20948.h:62:6: note: previous declaration of 'ICM20948_init' with type 'void(I2C_HandleTypeDef *, const uint8_t,  const uint8_t)' {aka 'void(I2C_HandleTypeDef *, const unsigned char,  const unsigned char)'}
+   62 | void ICM20948_init(I2C_HandleTypeDef * hi2c, uint8_t const selectI2cAddress, uint8_t const selectGyroSensitivity);
+      |      ^~~~~~~~~~~~~
+../Core/Inc/helper.h:58:6: error: conflicting types for 'ICM20948_readGyroscope_Z'; have 'void(I2C_HandleTypeDef *, uint8_t,  uint8_t,  float *)' {aka 'void(I2C_HandleTypeDef *, unsigned char,  unsigned char,  float *)'}
+   58 | void ICM20948_readGyroscope_Z(I2C_HandleTypeDef* hi2c, uint8_t selectI2cAddress, uint8_t selectGyroSensitivity, float* gyroZ);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Inc/ICM20948.h:64:6: note: previous declaration of 'ICM20948_readGyroscope_Z' with type 'void(I2C_HandleTypeDef *, const uint8_t,  const uint8_t,  int16_t *)' {aka 'void(I2C_HandleTypeDef *, const unsigned char,  const unsigned char,  short int *)'}
+   64 | void ICM20948_readGyroscope_Z(I2C_HandleTypeDef * hi2c, uint8_t const selectI2cAddress, uint8_t const selectGyroSensitivity, int16_t *gyroZ);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:96:3: error: too few arguments to function 'ICM20948_init'
+   96 |   ICM20948_init(&hi2c1, 0, GYRO_FULL_SCALE_2000DPS);
+      |   ^~~~~~~~~~~~~
+../Core/Inc/helper.h:51:6: note: declared here
+   51 | void ICM20948_init(
+      |      ^~~~~~~~~~~~~
+../Core/Src/main.c:121:25: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  121 |   OLED_ShowString(0, 0, "Press USER btn");
+      |                         ^~~~~~~~~~~~~~~~
+      |                         |
+      |                         char *
+In file included from ../Core/Src/main.c:25:
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:122:26: warning: pointer targets in passing argument 3 of 'OLED_ShowString' differ in signedness [-Wpointer-sign]
+  122 |   OLED_ShowString(0, 15, "to continue");
+      |                          ^~~~~~~~~~~~~
+      |                          |
+      |                          char *
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:191:9: warning: implicit declaration of function '__Gyro_Read_Z' [-Wimplicit-function-declaration]
+  191 |         __Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
+      |         ^~~~~~~~~~~~~
+../Core/Src/main.c:194:31: warning: passing argument 3 of 'OLED_ShowString' makes pointer from integer without a cast [-Wint-conversion]
+  194 |         OLED_ShowString(0, 0, gyroZ);
+      |                               ^~~~~
+      |                               |
+      |                               int16_t {aka short int}
+../Core/Inc/oled.h:44:59: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'int16_t' {aka 'short int'}
+   44 | void OLED_ShowString(uint8_t x, uint8_t y, const uint8_t *p);
+      |                                            ~~~~~~~~~~~~~~~^
+../Core/Src/main.c:87:11: warning: unused variable 'buffer' [-Wunused-variable]
+   87 |   uint8_t buffer[100];
+      |           ^~~~~~
+make: *** [Core/Src/subdir.mk:52: Core/Src/main.o] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
 
-15:51:15 Build Finished. 0 errors, 0 warnings. (took 212ms)
+17:48:13 Build Failed. 4 errors, 5 warnings. (took 306ms)
 

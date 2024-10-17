@@ -93,7 +93,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  ICM20948_init(&hi2c1, 0, GYRO_FULL_SCALE_2000DPS);
+  ICM20948_init(&hi2c1,0,GYRO_FULL_SCALE_2000DPS);
   /* USER CODE END Init */
 
   /* Configure the system clock */
