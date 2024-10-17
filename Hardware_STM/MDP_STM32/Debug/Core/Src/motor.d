@@ -29,7 +29,9 @@ Core/Src/motor.o: ../Core/Src/motor.c ../Core/Inc/motor.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/oled.h ../Core/Inc/servo.h ../Core/Inc/helper.h
+ ../Core/Inc/oled.h ../Core/Inc/servo.h ../Core/Inc/helper.h \
+ ../Core/Inc/ICM20948.h ../Core/Inc/ICM20948_ADDR.h \
+ ../Core/Inc/ICM20948_OPTIONS.h ../Core/Inc/AK09918.h
 ../Core/Inc/motor.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -65,3 +67,7 @@ Core/Src/motor.o: ../Core/Src/motor.c ../Core/Inc/motor.h \
 ../Core/Inc/oled.h:
 ../Core/Inc/servo.h:
 ../Core/Inc/helper.h:
+../Core/Inc/ICM20948.h:
+../Core/Inc/ICM20948_ADDR.h:
+../Core/Inc/ICM20948_OPTIONS.h:
+../Core/Inc/AK09918.h:

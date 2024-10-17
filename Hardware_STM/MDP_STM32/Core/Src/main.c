@@ -26,6 +26,7 @@
 #include "motor.h"
 #include "servo.h"
 #include "test.h"
+#include "ICM20948.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,6 +73,10 @@ uint8_t cmd_cnt = 0;
 uint8_t receive[1];
 int head = -1, curr = -1;
 uint8_t current_cmd = 0;
+
+
+// For the Gyro
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -197,8 +202,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
   // Initialize peripherals
   OLED_Init();
-  motor_init(&htim8, &htim2, &htim3);
+  motor_init(&htim8, &htim2, &htim3, &hi2c1);
   servo_init(&htim1);
+  ICM20948_init(&hi2c1,1,GYRO_FULL_SCALE_2000DPS);
 //  HCSR04_Init();
   // sensors_init(&hi2c1, &htim4, &sensor);
 
@@ -220,7 +226,7 @@ int main(void)
 
   // Start the interrupt for UART3
 //  HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
-  forward_pid(30);
+  forward_pid_gyro(50);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -230,6 +236,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//	  __Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
+//	  	  gyroZ = gyroZ * 0.01;
+//	  	  angleNow += gyroZ;
+//	  print_OLED(0, 0, "Z: %f", true, angleNow);
+//	  OLED_Refresh_Gram();
+//
+//	  uint8_t buf[15];
+//	  sprintf(buf, "%f\n\r", angleNow);
+//	  HAL_UART_Transmit(&huart3, buf, sizeof(buf), HAL_MAX_DELAY);
 //	  UART3_task();
 //	  HCSR04_Trigger();
 //	  HAL_Delay(100);

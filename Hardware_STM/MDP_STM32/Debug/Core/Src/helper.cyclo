@@ -2,11 +2,5 @@
 ../Core/Src/helper.c:18:6:print_OLED	2
 ../Core/Src/helper.c:33:6:send_ack	1
 ../Core/Src/helper.c:38:6:move	8
-../Core/Src/helper.c:75:19:ICM20948_BrustRead	1
-../Core/Src/helper.c:100:19:ICM20948_SelectUserBank	2
-../Core/Src/helper.c:124:19:ICM20948_WriteByte	1
-../Core/Src/helper.c:148:6:ICM20948_init	1
-../Core/Src/helper.c:231:6:ICM20948_readGyroscope_Z	5
-../Core/Src/helper.c:259:6:ICM20948_readAccelerometer_all	5
 ../Core/Src/helper.c:305:6:kalman_init	1
 ../Core/Src/helper.c:311:6:kalman_update	1

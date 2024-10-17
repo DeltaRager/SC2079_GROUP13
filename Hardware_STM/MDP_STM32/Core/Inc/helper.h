@@ -133,36 +133,36 @@ void send_ack();
 
 
 /*-------------- ICM20948 --------------*/
-HAL_StatusTypeDef ICM20948_BrustRead(
-	I2C_HandleTypeDef* hi2c, 
-	uint8_t sel_I2C_addr, 
-	uint8_t start_addr, 
-	uint16_t number_of_reg_to_read, 
-	uint8_t* read_data);
+//HAL_StatusTypeDef ICM20948_BrustRead(
+//	I2C_HandleTypeDef* hi2c,
+//	uint8_t sel_I2C_addr,
+//	uint8_t start_addr,
+//	uint16_t number_of_reg_to_read,
+//	uint8_t* read_data);
+//
+//HAL_StatusTypeDef ICM20948_SelectUserBank(
+//	I2C_HandleTypeDef* hi2c_ptr,
+//	uint8_t const selectI2cAddress,
+//	int user_bank_num);
 
-HAL_StatusTypeDef ICM20948_SelectUserBank(
-	I2C_HandleTypeDef* hi2c_ptr, 
-	uint8_t const selectI2cAddress, 
-	int user_bank_num);
 
-
-void ICM20948_init(
-	I2C_HandleTypeDef* hi2c,
-	uint8_t I2C_address,
-	uint8_t gyro_sensitivity,
-	uint8_t  accel_sensitivity);
-
-void ICM20948_readGyroscope_Z(
-	I2C_HandleTypeDef* hi2c, 
-	uint8_t selectI2cAddress, 
-	uint8_t selectGyroSensitivity, 
-	float* gyroZ);
-
-void ICM20948_readAccelerometer_all(
-	I2C_HandleTypeDef* hi2c, 
-	uint8_t selectI2cAddress, 
-	uint8_t selectAccelSensitivity, 
-	float readings[3]);
+//void ICM20948_init(
+//	I2C_HandleTypeDef* hi2c,
+//	uint8_t I2C_address,
+//	uint8_t gyro_sensitivity,
+//	uint8_t  accel_sensitivity);
+//
+//void ICM20948_readGyroscope_Z(
+//	I2C_HandleTypeDef* hi2c,
+//	uint8_t selectI2cAddress,
+//	uint8_t selectGyroSensitivity,
+//	float* gyroZ);
+//
+//void ICM20948_readAccelerometer_all(
+//	I2C_HandleTypeDef* hi2c,
+//	uint8_t selectI2cAddress,
+//	uint8_t selectAccelSensitivity,
+//	float readings[3]);
 
 
 /*------------ KALMAN FILTER ------------*/
