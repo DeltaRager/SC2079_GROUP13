@@ -1,0 +1,13 @@
+/*
+ * ICM20948_ADDR.h
+ *
+ *  Created on: Oct 17, 2024
+ *      Author: AD
+ */
+
+#ifndef INC_ICM20948_ADDR_H_
+#define INC_ICM20948_ADDR_H_
+
+
+
+#endif /* INC_ICM20948_ADDR_H_ */

@@ -137,20 +137,16 @@ void ultrasonic_task() {
     HCSR04_Init();
     HAL_Delay(200);
 
-    OLED_ShowString(0, 0, "tc1:");
-    OLED_ShowString(0, 15, "tc2:");
-    OLED_ShowString(0, 30, "echo:");
-    OLED_ShowString(0, 45, "dist:");
+    print_OLED(0, 0, "tc1:", false, 0);
+    print_OLED(0, 15, "tc2:", false, 0);
+    print_OLED(0, 30, "echo:", false, 0);
+    print_OLED(0, 45, "dist:", false, 0);
 
-    sprintf(buffer, "%u", tc1);
-    OLED_ShowString(40, 0, buffer);
-    sprintf(buffer, "%u", tc2);
-    OLED_ShowString(40, 15, buffer);
-    sprintf(buffer, "%u", echo);
-    OLED_ShowString(40, 30, buffer);
-    sprintf(buffer, "%f", dist);
-    OLED_ShowString(40, 45, buffer);
-    OLED_Refresh_Gram();
+    print_OLED(40, 0, "%u", true, tc1);
+    print_OLED(40, 15, "%u", true, tc2);
+    print_OLED(40, 30, "%u", true, echo);
+    print_OLED(40, 45, "%u", true, dist);
+
     HAL_Delay(200);
 }
 

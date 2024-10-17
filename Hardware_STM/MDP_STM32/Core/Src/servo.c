@@ -18,6 +18,6 @@ void servo_init(TIM_HandleTypeDef* pwm) {
 }
 
 void servo_set_dir(uint32_t val) {
-	HAL_Delay(500);
+	HAL_Delay(200);
 	pwm_tim->Instance->CCR1 = val;
 }

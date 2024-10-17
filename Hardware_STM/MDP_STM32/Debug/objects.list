@@ -1,3 +1,4 @@
+"./Core/Src/ICM20948.o"
 "./Core/Src/helper.o"
 "./Core/Src/main.o"
 "./Core/Src/motor.o"

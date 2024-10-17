@@ -12,6 +12,7 @@
 
 #include "main.h"
 #include "helper.h"
+#include "ICM20948.h"
 
 #define ICM_I2C_ADDR 	0
 #define US_IC_CHANNEL	TIM_CHANNEL_1

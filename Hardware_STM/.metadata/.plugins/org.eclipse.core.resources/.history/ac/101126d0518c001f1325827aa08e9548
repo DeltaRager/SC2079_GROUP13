@@ -1,0 +1,94 @@
+/*
+ * helper.c
+ *
+ *  Created on: Sep 10, 2024
+ *      Author: AD
+ *
+ *  Contain helper functions
+ */
+
+#include "helper.h"
+
+
+/*---------- OLED INTERACTION ----------*/
+bool is_USER_button_pressed() {
+	return HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET;
+}
+
+void print_OLED(int x, int y, uint8_t* msg, bool var_exist, int32_t val) {
+	uint8_t* buf[100];
+
+	if (var_exist) {
+		sprintf(buf, msg, val);
+	} else {
+		sprintf(buf, msg);
+	}
+
+	OLED_ShowString(x, y, buf);
+	OLED_Refresh_Gram();
+}
+
+
+/*-------------- COMMANDS --------------*/
+void send_ack(UART_HandleTypeDef* uart_ptr) {
+	uint8_t ack[] = "l";
+	HAL_UART_Transmit(uart_ptr, ack, sizeof(ack), 2000);
+}
+
+void move(uint8_t cmd) {
+	switch ((uint8_t) cmd) {
+	case 'w':
+		print_OLED(0, 30, "Forward", false, 0);
+		forward(40);
+		break;
+	case 's':
+		print_OLED(0, 30, "Backward", false, 0);
+		backward(40);
+		break;
+	case 'a':
+		print_OLED(0, 30, "Forward left", false, 0);
+		forward_left();
+		break;
+	case 'd':
+		print_OLED(0, 30, "Forward right", false, 0);
+		forward_right();
+		break;
+	case 'z':
+		print_OLED(0, 30, "Backward left", false, 0);
+		backward_left();
+		break;
+	case 'c':
+		print_OLED(0, 30, "Backward right", false, 0);
+		backward_right();
+		break;
+	case 'x':
+		print_OLED(0, 30, "Stop", false, 0);
+		stop();
+		break;
+	default:
+		print_OLED(0, 30, "cmd wrong type", false, 0);
+	}
+}
+
+
+/*----------------- PID -----------------*/
+void pid_reset(pid_t* pid)  {
+	pid->error_accumulate = 0;
+	pid->error_old = 0;
+}
+
+void pid_init(pid_t* pid, float Kp, float Ki, float Kd) {
+	pid_reset(pid);
+
+	pid->Kp = Kp;
+	pid->Ki = Ki;
+	pid->Kd = Kd;
+}
+
+float pid_adjust(pid_t* pid, float error, float scale) {
+	pid->error_accumulate += error;
+	float error_rate = (error - pid->error_old);
+	pid->error_old = error;
+
+	return scale * (pid->Kp*error + pid->Ki*pid->error_accumulate + pid->Kd*error_rate);
+}

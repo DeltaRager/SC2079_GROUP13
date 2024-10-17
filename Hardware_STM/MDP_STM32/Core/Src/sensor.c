@@ -23,7 +23,7 @@ void sensors_init(I2C_HandleTypeDef* i2c_ptr, TIM_HandleTypeDef* ic_ptr, sensor_
 	hic_ptr = ic_ptr;
 	sensor_ptr = ss_ptr;
 
-	ICM20948_init(hi2c_ptr, ICM_I2C_ADDR, GYRO_SEN, ACCEL_SEN);
+	//ICM20948_init(hi2c_ptr, ICM_I2C_ADDR, GYRO_SEN, ACCEL_SEN);
 	HAL_TIM_IC_Start_IT(ic_ptr, US_IC_CHANNEL);
 
 	ss_ptr->gyroZ_bias = 0;

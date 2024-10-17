@@ -10,8 +10,8 @@
 ../Core/Src/test.c:124:6:forward_left_task	8	static
 ../Core/Src/test.c:128:6:backward_right_task	8	static
 ../Core/Src/test.c:132:6:backward_left_task	8	static
-../Core/Src/test.c:136:6:ultrasonic_task	8	static
-../Core/Src/test.c:157:6:accelerometer_task	4	static
-../Core/Src/test.c:161:6:gyroscope_task	8	static
-../Core/Src/test.c:165:6:UART3_task	16	static
-../Core/Src/test.c:177:6:send_ack_task	16	static
+../Core/Src/test.c:136:6:ultrasonic_task	16	static
+../Core/Src/test.c:153:6:accelerometer_task	4	static
+../Core/Src/test.c:157:6:gyroscope_task	8	static
+../Core/Src/test.c:161:6:UART3_task	16	static
+../Core/Src/test.c:173:6:send_ack_task	16	static

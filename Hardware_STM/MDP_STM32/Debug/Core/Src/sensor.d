@@ -29,7 +29,9 @@ Core/Src/sensor.o: ../Core/Src/sensor.c ../Core/Inc/sensor.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/helper.h ../Core/Inc/helper.h
+ ../Core/Inc/helper.h ../Core/Inc/ICM20948.h ../Core/Inc/ICM20948_ADDR.h \
+ ../Core/Inc/ICM20948_OPTIONS.h ../Core/Inc/AK09918.h \
+ ../Core/Inc/helper.h
 ../Core/Inc/sensor.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -63,4 +65,8 @@ Core/Src/sensor.o: ../Core/Src/sensor.c ../Core/Inc/sensor.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../Core/Inc/helper.h:
+../Core/Inc/ICM20948.h:
+../Core/Inc/ICM20948_ADDR.h:
+../Core/Inc/ICM20948_OPTIONS.h:
+../Core/Inc/AK09918.h:
 ../Core/Inc/helper.h:

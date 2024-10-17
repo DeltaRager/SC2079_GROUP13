@@ -15,7 +15,7 @@
 #include "helper.h"
 
 #define SERVO_PWM_CHANNEL TIM_CHANNEL_1
-#define STRAIGHT	4712
+#define STRAIGHT	4765
 //#define LEFT		3000	// 38 degree
 
 #define LEFT		3500
