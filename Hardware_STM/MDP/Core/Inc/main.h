@@ -33,45 +33,45 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-#define PI 3.141592654
-#define WHEEL_LENGTH 20
-#define PPR 330
+#define PI 				3.141592654
+#define WHEEL_LENGTH 	20
+#define PPR 			330
 // distance calibration params
 //#define DIST_M 1.14117166
 //#define DIST_C 1.232534228
-#define SPEED_MODE_T 0
-#define SPEED_MODE_1 1
-#define SPEED_MODE_2 2
+#define SPEED_MODE_T	0
+#define SPEED_MODE_1 	1
+#define SPEED_MODE_2 	2
 
-#define DIST_M 1.150067316
-#define DIST_C 0.965311399
+#define DIST_M 				1.150067316
+#define DIST_C 				0.965311399
 
-#define INIT_DUTY_SPT_L 1200
-#define INIT_DUTY_SPT_R 1200
-#define DUTY_SPT_RANGE 600
+#define INIT_DUTY_SPT_L 	1200
+#define INIT_DUTY_SPT_R 	1200
+#define DUTY_SPT_RANGE 		600
 
-#define INIT_DUTY_SP1_L 2300
-#define INIT_DUTY_SP1_R 2300
-#define DUTY_SP1_RANGE 700
+#define INIT_DUTY_SP1_L 	2300
+#define INIT_DUTY_SP1_R 	2300
+#define DUTY_SP1_RANGE 		700
 
-#define INIT_DUTY_SP2_L 3000
-#define INIT_DUTY_SP2_R 3000
-#define DUTY_SP2_RANGE 700
+#define INIT_DUTY_SP2_L 	3000
+#define INIT_DUTY_SP2_R 	3000
+#define DUTY_SP2_RANGE 		700
 
-#define DIR_FORWARD 1
-#define DIR_BACKWARD 0
+#define DIR_FORWARD 		1
+#define DIR_BACKWARD		0
 
-#define SERVO_LEFT_MAX 10
-#define SERVO_CENTER 70 // original 74
-#define SERVO_RIGHT_MAX 220
+#define SERVO_LEFT_MAX 		10
+#define SERVO_CENTER		72 		// original 74
+#define SERVO_RIGHT_MAX 	220
 
-#define IR_CONST_A 25644.81557
-#define IR_CONST_B 260.4233354
-#define IR_SAMPLE 100
+#define IR_CONST_A 				25644.81557
+#define IR_CONST_B 				260.4233354
+#define IR_SAMPLE 				100
 
-#define MIN_SPEED_SCALE 0.4 // INIT_DUTY_SP1_L / INIT_DUTY_SP2_L
+#define MIN_SPEED_SCALE 	0.4 // INIT_DUTY_SP1_L / INIT_DUTY_SP2_L
 
-#define SERVO_TURN_TIME 300
+#define SERVO_TURN_TIME 	300
 
 #define __GET_TARGETTICK(dist, targetTick) ({ \
 	targetTick = (((dist) * DIST_M - DIST_C) / WHEEL_LENGTH * 1320) - 10; \

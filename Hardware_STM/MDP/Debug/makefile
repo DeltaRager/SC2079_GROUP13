@@ -67,8 +67,8 @@ all: main-build
 main-build: MDPFinal.elf secondary-outputs
 
 # Tool invocations
-MDPFinal.elf MDPFinal.map: $(OBJS) $(USER_OBJS) C:\Users\Abhinav\ T\ J\Desktop\MDP_CAR\bhav_code\MDP_final\MDP\STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "MDPFinal.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Abhinav T J\Desktop\MDP_CAR\bhav_code\MDP_final\MDP\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDPFinal.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+MDPFinal.elf MDPFinal.map: $(OBJS) $(USER_OBJS) D:\3.\ CE\ Timetable\ and\ Curriculum\7.\ AY2023-2024\ Sem\ 1\ (Year\ 4)\1.\ SC2079\ -\ Multidisciplinary\ Design\ Project\4.\ Project\SC2079_GROUP13\Hardware_STM\MDP\STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "MDPFinal.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MDPFinal.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

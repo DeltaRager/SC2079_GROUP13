@@ -162,16 +162,16 @@ uint8_t RX_BUFFER_SIZE = 4;
 uint8_t aRxBuffer[10];
 
 typedef struct _command {
-	uint8_t index;
-	uint16_t val;
+	uint8_t index;   // each command type has an index
+	uint16_t val;    // ???
 } Command;
 
 uint8_t CMD_BUFFER_SIZE = 12;
 typedef struct _commandQueue {
-	uint8_t head;
-	uint8_t tail;
-	uint8_t size;
-	Command buffer[12];
+	uint8_t head;    // ???
+	uint8_t tail;    // ???
+	uint8_t size;    // ???
+	Command buffer[12];    // ???
 } CommandQueue;
 
 CommandQueue cQueue;
@@ -180,7 +180,9 @@ Command curCmd;
 uint8_t rxMsg[16];
 char ch[16];
 
-uint8_t manualMode = 0;
+// 1 - manually control
+// 0 - running automatically
+uint8_t manualMode = 0; 
 
 // PID
 float targetAngle = 0;
@@ -1253,6 +1255,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef * huart) {
 	else if (aRxBuffer[0] == 'F' && aRxBuffer[1] == 'R') { // FR
 		manualMode = aRxBuffer[2] == '-' && aRxBuffer[3] == '-';
 		__ADD_COMMAND(cQueue, 4 + (manualMode ? 0 : 4), val);
+
+    // Debug
+//    OLED_Clear();
+//    OLED_ShowString(0, 0, "In FR");
 	}
 	else if (aRxBuffer[0] == 'B' && aRxBuffer[1] == 'L') { // BL
 		manualMode = aRxBuffer[2] == '-' && aRxBuffer[3] == '-';
@@ -1353,7 +1359,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	}
 
 }
-// ir sensor
+// IR sensor
 void IR_Left_Read() {
 	HAL_ADC_Start(&hadc1);
 	HAL_ADC_PollForConversion(&hadc1, 10);
@@ -1537,14 +1543,20 @@ void RobotMoveDistObstacle_IR(float * targetDist) {
 }
 
 void RobotTurn(float * targetAngle) {
+	uint8_t tempbuf[100];
 	angleNow = 0; gyroZ = 0;
 	last_curTask_tick = HAL_GetTick();
+
+  OLED_Clear();
+
 	do {
 	  if (HAL_GetTick() - last_curTask_tick >= 10) { // sample gyro every 10ms
 		  __Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
 		  angleNow += gyroZ / GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS * 0.01;
 		  if (abs(angleNow - *targetAngle) < 0.01) break;
 		  last_curTask_tick = HAL_GetTick();
+		  sprintf(tempbuf, "%f", angleNow);
+		  OLED_ShowString(0, 0, tempbuf);
 	  }
 	} while(1);
 	__SET_MOTOR_DUTY(&htim8, 0, 0);
@@ -2551,8 +2563,11 @@ void sensorTask(void *argument) {
 		/* Infinite loop */
 		for (;;) {
 			HCSR04_Read();
+//			OLED_Clear();			//add
 			sprintf(usVal, "Distance: %d \0", (int) Distance);
 			OLED_ShowString(0, 20, usVal);
+//			OLED_Refresh_Gram();	//add
+//			osDelay(1000);			//add
 
 			if (Distance <= usThreshold && usFlag == 1) {
 				usFlag = 0;
