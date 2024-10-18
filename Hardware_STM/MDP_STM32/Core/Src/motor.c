@@ -11,10 +11,12 @@
 #include <math.h>
 #include "ICM20948.h"
 
+
 // Timers for PWM, L and R Encoders
 TIM_HandleTypeDef *motor_pwm_tim, *l_enc_tim, *r_enc_tim;
 I2C_HandleTypeDef *gyro_i2c;
-// For matching motor speeds.
+
+// For matching motor speeds
 int16_t pwmValAccel = 0, pwm_val_target = 0, l_pwm_val = 0, r_pwm_val = 0;
 
 uint32_t l_counter = 0, r_counter = 0;
@@ -28,19 +30,19 @@ int16_t pwmMax = 1500;
 int16_t pwmMax_back = 2000;
 
 int l_err, r_err;
-int start=0;
+int start = 0;
 
 int16_t l_position = 0, r_position = 0;
 int16_t l_angle = 0, r_angle = 0;
 int16_t target_angle = 0;
 extern int16_t l_oldpos, r_oldpos;
-int16_t position_target; // target position
-int16_t l_error, r_error;           // error between target and actual
-int32_t l_error_area = 0, r_error_area = 0;  // area under error - to calculate I for PI implementation
+int16_t position_target;					// target position
+int16_t l_error, r_error;           		// error between target and actual
+int32_t l_error_area = 0, r_error_area = 0;	// area under error - to calculate I for PI implementation
 int32_t l_error_old, l_error_change, r_error_old, r_error_change;
-float_t l_error_rate, r_error_rate; // to calculate D for PID control
+float_t l_error_rate, r_error_rate;			// to calculate D for PID control
 int32_t l_millisOld, l_millisNow, l_dt;
-int32_t r_millisOld, r_millisNow, r_dt;// to calculate I and D for PID control
+int32_t r_millisOld, r_millisNow, r_dt;		// to calculate I and D for PID control
 int16_t Kp = 0;
 float_t Kd = 0;
 float_t Ki = 0;
