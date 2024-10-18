@@ -3190,3 +3190,18 @@ java.lang.Exception: The project description file (.project) for 'MDP_STM32' is 
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-10-17 01:07:23.419
 !MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-10-18 09:28:50.225 -----------------------------------------------
+eclipse.buildId=Version 1.16.0
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-10-18 09:29:01.605
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-10-18 09:29:01.606
+!MESSAGE Log4j2 initialized with config file D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-10-18 09:29:05.245
+!MESSAGE Started RMI Server, listening on port 41337
