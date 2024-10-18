@@ -154,8 +154,28 @@ void accelerometer_task() {
 
 }
 
-void gyroscope_task() {
-	print_OLED(50, 0, "%hd", true, gyroZ);
+void gyroscope_task(int32_t target) {
+	gyro_angle = 0;
+	gyroZ = 0;
+	last_tick = HAL_GetTick();
+
+	while (1) {
+		if (HAL_GetTick() - last_tick >= 10) {
+			__Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
+			gyro_angle += (int16_t)(((float)gyroZ) / 0.01);
+			print_OLED(50, 0, "%d", true, gyroZ);
+			print_OLED(70, 15, "%d", true, gyro_angle);
+			print_OLED(50, 30, "%d", true, abs(gyro_angle - target));
+
+			if (abs((int)(gyro_angle) - target) < 1)
+				break;
+
+			last_tick = HAL_GetTick();
+		}
+	}
+
+	OLED_Clear();
+	print_OLED(0, 0, "Done", false, 0);
 }
 
 void UART3_task() {
@@ -173,4 +193,15 @@ void UART3_task() {
 void send_ack_task() {
 	uint8_t ack[] = "l";
 	HAL_UART_Transmit(&huart3, ack, sizeof(ack), 2000);
+}
+
+void count_encoder_task() {
+	forward(90);
+}
+
+void count_gyro_task() {
+	// forward_right();
+	__Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
+	print_OLED(50, 0, "%d", true, gyroZ);
+
 }

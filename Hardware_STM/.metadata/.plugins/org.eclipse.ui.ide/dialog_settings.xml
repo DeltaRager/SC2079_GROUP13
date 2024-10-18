@@ -25,6 +25,7 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="D:\15. Folder\SC2079 other group code\SC2079\Group14MDP"/>
 			<item value="D:\15. Folder\mdp_stm_code _submissions\MDP_final\MDP"/>
 		</list>
 	</section>

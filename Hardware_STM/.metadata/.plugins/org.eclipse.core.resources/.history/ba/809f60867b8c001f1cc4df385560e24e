@@ -1,0 +1,188 @@
+/*
+ * test.c
+ *
+ *  Created on: Oct 10, 2024
+ *      Author: AD
+ */
+
+#include "test.h"
+
+
+// Checklist
+void task_A1(uint8_t* buffer) {
+	// Task A1
+	if (buffer[0] == 'a') {
+		servo_set_val(LEFT);
+		HAL_Delay(2000);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Left");
+		OLED_Refresh_Gram();
+		motor_forward_left(90);
+	}
+}
+
+void task_A3() {
+	// Task A3
+	uint32_t dist = 100;
+	servo_set_val(STRAIGHT);
+	motor_set_speed(20);
+	HAL_Delay(1000);
+	motor_forward(dist);
+}
+
+void task_A4_left() {
+	  // Task A4 LEFT
+	  uint16_t angle = 360;
+	  servo_set_val(LEFT);
+	  motor_set_speed(20);
+
+	  for (int i = 0; i < angle / 90; angle -= 90)
+		  motor_forward_left(90);
+}
+
+void task_A4_right() {
+	  // Task A4 RIGHT
+	   uint16_t angle = 360;
+	   servo_set_val(RIGHT);
+	   motor_set_speed(20);
+
+	   for (int i = 0; i < angle / 90; angle -= 90)
+	 	  motor_forward_right(90);
+}
+
+void abhinav_task() {
+	// Abhinav's Task: left - right - right - backward - repeat
+	for (int i = 0; i < 3; i++) {
+		motor_forward_right(90);
+		HAL_Delay(1000);
+		servo_set_val(STRAIGHT);
+		HAL_Delay(1000);
+
+		motor_forward_left(90);
+		motor_forward_left(90);
+		HAL_Delay(2000);
+		motor_backward_inf();
+		HAL_Delay(3000);
+		motor_stop();
+		HAL_Delay(2000);
+	}
+}
+
+void moving_task() {
+	// Retrieving commands from the tablet
+	// HAL_UART_Receive(&huart3, buffer, 1, 3000);
+	memset(buffer, 0, sizeof(buffer));
+	// OLED_ShowString(0, 0, buffer);
+	// OLED_Refresh_Gram();
+
+	HAL_UART_Receive(&huart3, buffer, 1, 3000);
+
+	if (buffer[0] == 'w') {
+		servo_set_val(STRAIGHT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Forward");
+		OLED_Refresh_Gram();
+		motor_forward(80);
+	} else if (buffer[0] == 's') {
+		servo_set_val(STRAIGHT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Backward");
+		OLED_Refresh_Gram();
+		motor_backward_inf();
+	} else if (buffer[0] == 'a') {
+		servo_set_val(LEFT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Left");
+		OLED_Refresh_Gram();
+		motor_forward_left(90);
+	} else if (buffer[0] == 'd') {
+		servo_set_val(RIGHT);
+		HAL_Delay(500);
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Right");
+		OLED_Refresh_Gram();
+		motor_forward_right(90);
+	}
+}
+
+// Functionality
+void forward_task() {
+	forward(80);
+}
+
+void backward_task() {
+	backward(80);
+}
+
+void forward_right_task() {
+	forward_right();
+}
+
+void forward_left_task() {
+	forward_left();
+}
+
+void backward_right_task() {
+	backward_right();
+}
+
+void backward_left_task() {
+	backward_left();
+}
+
+void ultrasonic_task() {
+    HCSR04_Init();
+    HAL_Delay(200);
+
+    print_OLED(0, 0, "tc1:", false, 0);
+    print_OLED(0, 15, "tc2:", false, 0);
+    print_OLED(0, 30, "echo:", false, 0);
+    print_OLED(0, 45, "dist:", false, 0);
+
+    print_OLED(40, 0, "%u", true, tc1);
+    print_OLED(40, 15, "%u", true, tc2);
+    print_OLED(40, 30, "%u", true, echo);
+    print_OLED(40, 45, "%u", true, dist);
+
+    HAL_Delay(200);
+}
+
+void accelerometer_task() {
+
+}
+
+void gyroscope_task() {
+	gyro_angle = 0.0;
+	gyroZ = 0;
+	last_tick = HAL_GetTick();
+
+	while (1) {
+		if (HAL_GetTick() - last_tick >= 10) {
+			__Gyro_Read_Z(&hi2c1, readGyroZData, gyroZ);
+			gyro_angle += 1.0 * gyroZ / GYRO_SENSITIVITY_SCALE_FACTOR_2000DPS * 0.01;
+			print_OLED(50, 0, "%hd", true, gyroZ);
+			print_OLED(50, 15, "%f", true, gyro_angle);
+			last_tick = HAL_GetTick();
+		}
+	}
+}
+
+void UART3_task() {
+	print_OLED(0, 0, "cmd_cnt: %u", true, cmd_cnt);
+	HAL_Delay(100);
+
+	if (cmd_cnt > 0) {
+		head++;
+		move(cmd_buffer[head]);
+		send_ack(&huart3);
+		cmd_cnt--;
+	}
+}
+	
+void send_ack_task() {
+	uint8_t ack[] = "l";
+	HAL_UART_Transmit(&huart3, ack, sizeof(ack), 2000);
+}

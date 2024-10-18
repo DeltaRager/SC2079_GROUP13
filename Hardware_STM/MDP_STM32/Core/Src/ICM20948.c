@@ -153,7 +153,7 @@ void ICM20948_init(I2C_HandleTypeDef * hi2c, uint8_t const selectI2cAddress, uin
 			hi2c,
 			selectI2cAddress,
 			ICM20948__USER_BANK_2__GYRO_CONFIG_1__REGISTER,
-			3 << GYRO_DLPFCFG_BIT|selectGyroSensitivity << BIT_1|EN_GRYO_DLPF << GYRO_FCHOICE_BIT);
+			3 << GYRO_DLPFCFG_BIT|selectGyroSensitivity << BIT_1|EN_GYRO_DLPF << GYRO_FCHOICE_BIT);
 
 //	status = _ICM20948_WriteByte(
 //			hi2c,
@@ -206,24 +206,24 @@ void ICM20948_readGyroscope_allAxises(I2C_HandleTypeDef * hi2c, uint8_t const se
 
 	switch (selectGyroSensitivity) {
 		case GYRO_FULL_SCALE_250DPS:
-			readings[X] /= GRYO_SENSITIVITY_SCALE_FACTOR_250DPS;
-			readings[Y] /= GRYO_SENSITIVITY_SCALE_FACTOR_250DPS;
-			readings[Z] /= GRYO_SENSITIVITY_SCALE_FACTOR_250DPS;
+			readings[X] /= GYRO_SENSITIVITY_SCALE_FACTOR_250DPS;
+			readings[Y] /= GYRO_SENSITIVITY_SCALE_FACTOR_250DPS;
+			readings[Z] /= GYRO_SENSITIVITY_SCALE_FACTOR_250DPS;
 			break;
 		case GYRO_FULL_SCALE_500DPS:
-			readings[X] /= GRYO_SENSITIVITY_SCALE_FACTOR_500DPS;
-			readings[Y] /= GRYO_SENSITIVITY_SCALE_FACTOR_500DPS;
-			readings[Z] /= GRYO_SENSITIVITY_SCALE_FACTOR_500DPS;
+			readings[X] /= GYRO_SENSITIVITY_SCALE_FACTOR_500DPS;
+			readings[Y] /= GYRO_SENSITIVITY_SCALE_FACTOR_500DPS;
+			readings[Z] /= GYRO_SENSITIVITY_SCALE_FACTOR_500DPS;
 			break;
 		case GYRO_FULL_SCALE_1000DPS:
-			readings[X] /= GRYO_SENSITIVITY_SCALE_FACTOR_1000DPS;
-			readings[Y] /= GRYO_SENSITIVITY_SCALE_FACTOR_1000DPS;
-			readings[Z] /= GRYO_SENSITIVITY_SCALE_FACTOR_1000DPS;
+			readings[X] /= GYRO_SENSITIVITY_SCALE_FACTOR_1000DPS;
+			readings[Y] /= GYRO_SENSITIVITY_SCALE_FACTOR_1000DPS;
+			readings[Z] /= GYRO_SENSITIVITY_SCALE_FACTOR_1000DPS;
 			break;
 		case GYRO_FULL_SCALE_2000DPS:
-			readings[X] /= GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS;
-			readings[Y] /= GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS;
-			readings[Z] /= GRYO_SENSITIVITY_SCALE_FACTOR_2000DPS;
+			readings[X] /= GYRO_SENSITIVITY_SCALE_FACTOR_2000DPS;
+			readings[Y] /= GYRO_SENSITIVITY_SCALE_FACTOR_2000DPS;
+			readings[Z] /= GYRO_SENSITIVITY_SCALE_FACTOR_2000DPS;
 			break;
 	}
 }
@@ -236,7 +236,7 @@ void ICM20948_readGyroscope_Z(I2C_HandleTypeDef * hi2c, uint8_t const selectI2cA
 	_ICM20948_BrustRead(hi2c, selectI2cAddress, ICM20948__USER_BANK_0__GYRO_ZOUT_H__REGISTER, 2, readGyroDataZ);
 
 	*gyroZ = readGyroDataZ[0]<<8 | readGyroDataZ[1];
-	*gyroZ /= GRYO_SENSITIVITY_SCALE_FACTOR_250DPS;
+	*gyroZ /= GYRO_SENSITIVITY_SCALE_FACTOR_250DPS;
 }
 
 void ICM20948_readAccelerometer_allAxises(I2C_HandleTypeDef * hi2c, uint8_t const selectI2cAddress, uint8_t const selectAccelSensitivity, int16_t readings[3]) {

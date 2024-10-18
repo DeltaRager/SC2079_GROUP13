@@ -24,7 +24,6 @@
 #include "ICM20948.h"
 #include "oled.h"
 #include "helper.h"
-#include "motor.h"
 #include "servo.h"
 #include "test.h"
 /* USER CODE END Includes */
@@ -60,15 +59,19 @@ UART_HandleTypeDef huart3;
 // Buffers
 uint8_t buffer[100];
 
+// For counting time HAL_GetTick()
+uint32_t last_tick = 0;
+
 // For the ultrasonic sensor
 uint32_t tc1 = 0, tc2 = 0, echo = 0;
 float dist = 0.0;
 bool is_first_captured = false;
 
-// Sensors
+// Sensors (Gyroscope)
 sensor_t sensor;
-uint8_t readGyroZData[2];
-int16_t gyroZ;
+uint8_t readGyroZData[2] = {0};
+int32_t gyroZ = 0;
+int16_t gyro_target_angle = 0, gyro_angle = 0;
 
 // Count the number of commands
 uint8_t cmd_buffer[1000] = {0};
@@ -198,6 +201,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   // Initialize peripherals
   OLED_Init();
+  ICM20948_init(&hi2c1, 0, GYRO_FULL_SCALE_2000DPS);
   motor_init(&htim8, &htim2, &htim3);
   servo_init(&htim1);
   // sensors_init(&hi2c1, &htim4, &sensor);
@@ -220,7 +224,14 @@ int main(void)
 
   // One-time Task
   //forward_pid(40);
-  print_OLED(0, 0, "angle:", false, 0);
+  // print_OLED(0, 0, "gyroZ:", false, 0);
+  // print_OLED(0, 15, "angle:", false, 0);
+  // print_OLED(0, 30, "g-t:", false, 0);
+  //gyroscope_task(90);
+  //count_encoder_task();
+//  forward_right();
+  servo_set_dir(LEFT);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -717,6 +728,7 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();

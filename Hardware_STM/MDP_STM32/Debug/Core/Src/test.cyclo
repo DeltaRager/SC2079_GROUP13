@@ -12,6 +12,8 @@
 ../Core/Src/test.c:132:6:backward_left_task	1
 ../Core/Src/test.c:136:6:ultrasonic_task	1
 ../Core/Src/test.c:153:6:accelerometer_task	1
-../Core/Src/test.c:157:6:gyroscope_task	1
-../Core/Src/test.c:161:6:UART3_task	2
-../Core/Src/test.c:173:6:send_ack_task	1
+../Core/Src/test.c:157:6:gyroscope_task	4
+../Core/Src/test.c:181:6:UART3_task	2
+../Core/Src/test.c:193:6:send_ack_task	1
+../Core/Src/test.c:198:6:count_encoder_task	1
+../Core/Src/test.c:202:6:count_gyro_task	1
