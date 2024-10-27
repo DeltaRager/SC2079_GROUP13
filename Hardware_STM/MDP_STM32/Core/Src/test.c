@@ -134,20 +134,22 @@ void backward_left_task() {
 }
 
 void ultrasonic_task() {
-    HCSR04_Init();
-    HAL_Delay(200);
+	HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
 
-    print_OLED(0, 0, "tc1:", false, 0);
-    print_OLED(0, 15, "tc2:", false, 0);
-    print_OLED(0, 30, "echo:", false, 0);
-    print_OLED(0, 45, "dist:", false, 0);
+	print_OLED(0, 0, "tc1:", false, 0);
+	print_OLED(0, 15, "tc2:", false, 0);
+	print_OLED(0, 30, "echo:", false, 0);
+	print_OLED(0, 45, "dist:", false, 0);
 
-    print_OLED(40, 0, "%u", true, tc1);
-    print_OLED(40, 15, "%u", true, tc2);
-    print_OLED(40, 30, "%u", true, echo);
-    print_OLED(40, 45, "%u", true, dist);
+	while (1) {
+		HCSR04_Read();
 
-    HAL_Delay(200);
+		print_OLED(40, 0, "%u", true, tc1);
+		print_OLED(40, 15, "%u", true, tc2);
+		print_OLED(40, 30, "%u", true, echo);
+		print_OLED(40, 45, "%u", true, dist);
+		HAL_Delay(100);
+	}
 }
 
 void accelerometer_task() {

@@ -1,0 +1,23 @@
+
+!ENTRY org.eclipse.ui.ide 4 4 2024-10-18 12:56:27.831
+!MESSAGE Problems saving workspace
+
+!ENTRY org.eclipse.ui.ide 4 1 2024-10-18 12:56:27.831
+!MESSAGE Problems occurred while trying to save the state of the workbench.
+!SUBENTRY 1 org.eclipse.core.resources 4 568 2024-10-18 12:56:27.831
+!MESSAGE Could not write workspace metadata 'D:/3. CE Timetable and Curriculum/7. AY2023-2024 Sem 1 (Year 4)/1. SC2079 - Multidisciplinary Design Project/4. Project/SC2079_GROUP13/Hardware_STM/MDP temp dir/.metadata/.plugins/org.eclipse.core.resources/.root/1.tree'.
+!STACK 0
+java.io.FileNotFoundException: D:\3. CE Timetable and Curriculum\7. AY2023-2024 Sem 1 (Year 4)\1. SC2079 - Multidisciplinary Design Project\4. Project\SC2079_GROUP13\Hardware_STM\MDP temp dir\.metadata\.plugins\org.eclipse.core.resources\.root\1.tree (The system cannot find the path specified)
+	at java.base/java.io.FileOutputStream.open0(Native Method)
+	at java.base/java.io.FileOutputStream.open(FileOutputStream.java:293)
+	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:235)
+	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:184)
+	at org.eclipse.core.internal.localstore.SafeFileOutputStream.<init>(SafeFileOutputStream.java:55)
+	at org.eclipse.core.internal.resources.SaveManager.saveTree(SaveManager.java:1424)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1230)
+	at org.eclipse.core.internal.resources.Workspace.save(Workspace.java:2494)
+	at org.eclipse.ui.internal.ide.application.IDEWorkbenchAdvisor.lambda$1(IDEWorkbenchAdvisor.java:553)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:122)
+
+!ENTRY org.eclipse.core.resources 2 10035 2024-10-18 12:56:28.005
+!MESSAGE The workspace will exit with unsaved changes in this session.

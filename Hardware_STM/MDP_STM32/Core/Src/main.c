@@ -99,56 +99,42 @@ static void MX_TIM4_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void delay_us(uint16_t us) {
-  __HAL_TIM_SET_COUNTER(&htim6, 0);
-  while(__HAL_TIM_GET_COUNTER(&htim6) < us);
+  __HAL_TIM_SET_COUNTER(&htim4, 0);
+  while(__HAL_TIM_GET_COUNTER(&htim4) < us);
 }
 
-void HCSR04_Init() {
-  HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
-  
-  __HAL_TIM_SET_CAPTUREPOLARITY(&htim1, TIM_CHANNEL_4, TIM_INPUTCHANNELPOLARITY_RISING);
-  HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_4);
-  HAL_TIM_Base_Start_IT(&htim1);
-  // HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
-  // HAL_Delay(100);
-
-  HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_SET);     // pull the TRIG pin HIGH
+// Call when u want to get reading from Ultrasonic Sensor
+void HCSR04_Read() {
+  HAL_GPIO_WritePin(TRIGGER_GPIO_Port, TRIGGER_Pin, GPIO_PIN_SET);     // pull the TRIG pin HIGH
   delay_us(10);                                                        // wait for 10 us
-  HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
-  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
-}
-
-void HCSR04_Trigger() {
-  // HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
-  // HAL_Delay(100);
-
-  HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_SET);     // pull the TRIG pin HIGH
-  delay_us(10);                                                        // wait for 10 us
-  HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
-  __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+  HAL_GPIO_WritePin(TRIGGER_GPIO_Port, TRIGGER_Pin, GPIO_PIN_RESET);   // pull the TRIG pin low
+  __HAL_TIM_ENABLE_IT(&htim4, TIM_IT_CC1);
 }
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim_ptr) {
-  if (htim_ptr->Channel != HAL_TIM_ACTIVE_CHANNEL_4)
-    return;
+    if (htim_ptr->Channel != HAL_TIM_ACTIVE_CHANNEL_1)
+        return;
 
-  if (!is_first_captured) {                                   // If the first value is not captured
-    tc1 = HAL_TIM_ReadCapturedValue(htim_ptr, TIM_CHANNEL_4); // read the first value
-    is_first_captured = true;                                 // set the first captured as true
-    // Now change the polarity to falling edge
-    __HAL_TIM_SET_CAPTUREPOLARITY(htim_ptr, TIM_CHANNEL_4, TIM_INPUTCHANNELPOLARITY_FALLING);
-  } else if (is_first_captured) {                             // If the first is already captured
-    tc2 = HAL_TIM_ReadCapturedValue(htim_ptr, TIM_CHANNEL_4); // read second value
-    __HAL_TIM_SET_COUNTER(htim_ptr, 0);                       // reset the counter
+    OLED_Clear();
+    print_OLED(0, 0, "Enter capture", false, 0);
 
-    echo = (tc2 > tc1) ? (tc2 - tc1) : (64000 - tc1 + tc2);
-    dist = echo * 0.034/2;
-    is_first_captured = false;                                // set it back to false
+    if (!is_first_captured) {                                       // If the first value is not captured
+        tc1 = HAL_TIM_ReadCapturedValue(htim_ptr, TIM_CHANNEL_1);   // read the first value
+        is_first_captured = true;                                   // set the first captured as true
+        // Now change the polarity to falling edge
+        __HAL_TIM_SET_CAPTUREPOLARITY(htim_ptr, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_FALLING);
+    } else if (is_first_captured) {                                 // If the first is already captured
+        tc2 = HAL_TIM_ReadCapturedValue(htim_ptr, TIM_CHANNEL_1);   // read second value
+        __HAL_TIM_SET_COUNTER(htim_ptr, 0);                         // reset the counter
 
-    // Set polarity to rising edge
-    __HAL_TIM_SET_CAPTUREPOLARITY(htim_ptr, TIM_CHANNEL_4, TIM_INPUTCHANNELPOLARITY_RISING);
-    __HAL_TIM_DISABLE_IT(&htim1, TIM_IT_CC4);
-  }
+        echo = (tc2 > tc1) ? (tc2 - tc1) : (64000 - tc1 + tc2);
+        dist = ((float)echo) * 0.034/2;
+        is_first_captured = false;                                // set it back to false
+
+        // Set polarity to rising edge
+        __HAL_TIM_SET_CAPTUREPOLARITY(htim_ptr, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
+        __HAL_TIM_DISABLE_IT(&htim4, TIM_IT_CC1);
+    }
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
@@ -199,6 +185,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+
   // Initialize peripherals
   OLED_Init();
   ICM20948_init(&hi2c1, 0, GYRO_FULL_SCALE_2000DPS);
@@ -207,7 +194,7 @@ int main(void)
   // sensors_init(&hi2c1, &htim4, &sensor);
 
   // Delay loop for generating a 10us pulse (TIM6)
-  HAL_TIM_Base_Start(&htim6);
+  //HAL_TIM_Base_Start(&htim6);
 
   // USER button
   OLED_ShowString(0, 0, "Press USER btn");
@@ -221,7 +208,22 @@ int main(void)
 
   // Start the interrupt for UART3
   HAL_UART_Receive_IT(&huart3, receive, sizeof(receive));
+	HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_1);
 
+	print_OLED(0, 0, "tc1:", false, 0);
+	print_OLED(0, 15, "tc2:", false, 0);
+	print_OLED(0, 30, "echo:", false, 0);
+	print_OLED(0, 45, "dist:", false, 0);
+
+	while (1) {
+		HCSR04_Read();
+
+		print_OLED(40, 0, "%u", true, tc1);
+		print_OLED(40, 15, "%u", true, tc2);
+		print_OLED(40, 30, "%u", true, echo);
+		print_OLED(40, 45, "%.3f", true, dist);
+		HAL_Delay(100);
+	}
   // One-time Task
   //forward_pid(40);
   // print_OLED(0, 0, "gyroZ:", false, 0);
@@ -230,7 +232,7 @@ int main(void)
   //gyroscope_task(90);
   //count_encoder_task();
 //  forward_right();
-  servo_set_dir(LEFT);
+//  servo_set_dir(LEFT);
 
   /* USER CODE END 2 */
 
@@ -527,7 +529,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 16-1;
+  htim4.Init.Prescaler = 0;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -551,7 +553,7 @@ static void MX_TIM4_Init(void)
   {
     Error_Handler();
   }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_BOTHEDGE;
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
   sConfigIC.ICFilter = 0;
@@ -742,7 +744,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, MOTOR_A_IN2_Pin|MOTOR_A_IN1_Pin|MOTOR_B_IN1_Pin|MOTOR_B_IN2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(US_TRIG_GPIO_Port, US_TRIG_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TRIGGER_GPIO_Port, TRIGGER_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : OLED_SCLK_Pin OLED_SDIN_Pin OLED_RESET_Pin OLED_DC_Pin
                            LED3_Pin */
@@ -766,12 +768,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : US_TRIG_Pin */
-  GPIO_InitStruct.Pin = US_TRIG_Pin;
+  /*Configure GPIO pin : TRIGGER_Pin */
+  GPIO_InitStruct.Pin = TRIGGER_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(US_TRIG_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(TRIGGER_GPIO_Port, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
